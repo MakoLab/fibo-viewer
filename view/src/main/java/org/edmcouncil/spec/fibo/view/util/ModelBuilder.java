@@ -36,9 +36,8 @@ public class ModelBuilder {
 
   public ModelBuilder ontoDetails(List<OwlDetails> details) {
 
-    model.addAttribute("tree_si_list", details);
-    model.addAttribute("tree_si_display", true);
-    model.addAttribute("cl_display", true);
+    model.addAttribute("details_list", details);
+    model.addAttribute("details_display", true);
 
     return this;
   }

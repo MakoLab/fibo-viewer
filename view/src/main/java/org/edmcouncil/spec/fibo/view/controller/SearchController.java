@@ -39,17 +39,14 @@ public class SearchController {
   }
 
   @GetMapping
-  public String search(@RequestParam("query") String query,
-      @RequestParam(value = "docID", required = false, defaultValue = "") String docID,
-      @RequestParam(value = "elementID", required = false, defaultValue = "") String elementID,
-      Model model) {
+  public String search(@RequestParam("query") String query, Model model) {
 
-    LOGGER.info("[GET]: search ? query = {} & docID = {}", query, docID);
+    LOGGER.info("[GET]: search ? query = {}", query);
     Query q = new Query();
     q.setValue(query);
-    ModelBuilder mb = new ModelBuilder(model);
+    ModelBuilder modelBuilder = new ModelBuilder(model);
 
-    searchService.search(query, mb);
+    searchService.search(query, modelBuilder);
 
     return "search";
   }

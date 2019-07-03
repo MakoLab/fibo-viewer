@@ -19,11 +19,11 @@ public class SearchService {
   private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
 
   @Autowired
-  private WeaselOntologyManager ets;
+  private WeaselOntologyManager ontologyManager;
 
   public void search(String query, ModelBuilder mb) {
     List<OwlDetails> weaselTerms;
-    OwlDetails wd = ets.getDetailsByIri(query);
+    OwlDetails wd = ontologyManager.getDetailsByIri(query);
     weaselTerms = new LinkedList<>();
     weaselTerms.add(wd);
     mb.setQuery(query)

@@ -26,15 +26,6 @@
     <resource.delimiter>@</resource.delimiter>
   </properties>
 
-  <dependencies>
-    
-    <dependency>
-      <groupId>net.sourceforge.owlapi</groupId>
-      <artifactId>owlapi-distribution</artifactId>
-      <version>5.1.10</version>
-    </dependency>
-
-  </dependencies>
   <modules>
     <module>view</module>
     <module>config</module>

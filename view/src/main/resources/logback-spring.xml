@@ -23,7 +23,7 @@
             </encoder>
         </appender>
     </springProfile>
-    <logger name="com.makolab.rnd.splitview" level="DEBUG" />
+    <logger name="org.edmcouncil.spec.fibo" level="DEBUG" />
     <root level="INFO">
         <appender-ref ref="STDOUT" />
         <springProfile name="prod">

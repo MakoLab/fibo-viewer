@@ -1,5 +1,6 @@
 package org.edmcouncil.spec.fibo.weasel.model;
 
+import org.edmcouncil.spec.fibo.weasel.model.impl.OwlAnnotationPropertyValue;
 import java.util.List;
 import java.util.Map;
 
@@ -9,15 +10,15 @@ import java.util.Map;
 public class OwlDetails {
 
   private String label;
-  private OwlDetailsProperties properties;
+  private OwlDetailsProperties<OwlAnnotationPropertyValue> properties;
   private String type;
 
   public OwlDetails() {
-  if (properties == null) {
-      properties = new OwlDetailsProperties();
+    if (properties == null) {
+      properties = new OwlDetailsProperties<>();
     }
   }
-  
+
   public String getLabel() {
     return label;
   }
@@ -26,7 +27,7 @@ public class OwlDetails {
     this.label = label;
   }
 
-  public Map<String, List<String>> getProperties() {
+  public Map<String, List<OwlAnnotationPropertyValue>> getProperties() {
     return properties.getProperties();
   }
 
@@ -38,12 +39,20 @@ public class OwlDetails {
     this.type = type;
   }
 
-  public void addProperty(String key, String property) {
+  public void addProperty(String key, OwlAnnotationPropertyValue property) {
     properties.addProperty(key, property);
   }
 
   public void sortProperties(List<String> priorityList) {
     properties.sort(priorityList);
+  }
+
+  public void addAllProperties(OwlDetailsProperties<OwlAnnotationPropertyValue> axioms) {
+    axioms.getProperties().entrySet().forEach((entry) -> {
+      entry.getValue().forEach((propertyValue) -> {
+        properties.addProperty(entry.getKey(), propertyValue);
+      });
+    });
   }
 
 }

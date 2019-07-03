@@ -16,7 +16,7 @@
           <div class="card">
             <div class="card-body">
               <c:choose>
-                <c:when test="${cl_display}">
+                <c:when test="${details_display}">
                   <jsp:directive.include file="page/elements/classList.jsp" />
                 </c:when>
                 <c:otherwise>

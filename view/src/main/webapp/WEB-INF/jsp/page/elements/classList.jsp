@@ -1,5 +1,5 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<c:forEach items="${tree_si_list}" var="clazz">
+<c:forEach items="${details_list}" var="clazz">
   <div class="my-3 px-3">
 
     <div class="row">
@@ -20,23 +20,22 @@
           <c:when test="${fn:length(entry.value)==1}">
             <c:forEach var="details" items="${entry.value}">
               <c:choose>
-                <c:when test="${fn:contains(entry.key,'definition')
-                                || fn:contains(entry.key,'comment')
-                                || fn:contains(entry.key,'description')
-                                || fn:contains(entry.key,'SubClassOf')
-                        }"> 
-                  <span class="mb-3">${details}</span>
+                <c:when test="${details.type eq 'STRING'}"> 
+                  <span class="mb-3">${details.value}</span>
+                </c:when>
+                <c:when test="${details.type eq 'IRI'}"> 
+                  <a href = "${pageContext.request.contextPath}/search?query=${details.value}"
+                     class = "custom-link mb-3">${details.value}</a>
+                </c:when>
+                <c:when test="${details.type eq 'ANY_URI'}"> 
+                  <a href="${details.value}"
+                     class="custom-link mb-3">${details.value}</a>
                 </c:when>
                 <c:otherwise>
-                  <a
-                    href="${pageContext.request.contextPath}/search?query=${details}"
-                    class="custom-link mb-3">${details}</a>
-
+                  <span class="mb-3">${details.value}</span>
                 </c:otherwise>
               </c:choose>
-
             </c:forEach>
-
           </c:when>
           <c:otherwise>
             <br />
@@ -44,25 +43,21 @@
               <c:forEach var="details" items="${entry.value}">
 
                 <c:choose>
-                  <c:when test="${fn:contains(entry.key,'definition')
-                                  || fn:contains(entry.key,'comment')
-                                  || fn:contains(entry.key,'description')
-                                  || fn:contains(entry.key,'SubClassOf')
-                                  || fn:contains(entry.key,'module')
-                                  || fn:contains(entry.key,'label')
-                                  || fn:contains(entry.key,'editorialNote')
-                                  || fn:contains(entry.key,'explanatoryNote')
-                          }"> 
-                    <li>${details}</li>
+                  <c:when test="${details.type eq 'STRING'}"> 
+                    <li>${details.value}</li>
+                  </c:when>
+                  <c:when test="${details.type eq 'IRI'}"> 
+                    <li><a href = "${pageContext.request.contextPath}/search?query=${details.value}"
+                           class = "custom-link">${details.value}</a></li>
+                  </c:when>
+                  <c:when test="${details.type eq 'ANY_URI'}"> 
+                    <li><a href="${details.value}"
+                           class="custom-link">${details.value}</a></li>
                   </c:when>
                   <c:otherwise>
-                    <li><a
-                        href="${pageContext.request.contextPath}/search?query=${details}"
-                        class="custom-link">${details}</a></li>
-
+                    <li>${details.value}</li>
                   </c:otherwise>
                 </c:choose>
-
 
               </c:forEach>
             </ul>
@@ -73,9 +68,7 @@
     </c:forEach>
 
     <c:if test="${empty clazz.properties}">
-      <ul>
-
-      </ul>
+      There is nothing to display...
     </c:if>
     <div class="border-bottom col-12 mt-1"></div>
   </div>

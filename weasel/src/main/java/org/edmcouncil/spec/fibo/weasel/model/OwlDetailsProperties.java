@@ -13,21 +13,21 @@ import org.edmcouncil.spec.fibo.weasel.comparator.WeaselComparators;
 /**
  * Create by Michał Daniel (michal.daniel@makolab.com)
  */
-public class OwlDetailsProperties {
+public class OwlDetailsProperties<T> {
 
-  private Map<String, List<String>> properties;
+  private Map<String, List<T>> properties;
 
   public OwlDetailsProperties() {
     properties = new HashMap<>();
   }
   
 
-  public void addProperty(String key, String property) {
+  public void addProperty(String key, T property) {
     if (this.properties == null) {
       this.properties = new HashMap<>();
     }
 
-    List<String> propertiesList = properties.get(key);
+    List<T> propertiesList = properties.get(key);
     if (propertiesList == null) {
       propertiesList = new LinkedList<>();
     }
@@ -36,7 +36,7 @@ public class OwlDetailsProperties {
     properties.put(key, propertiesList);
   }
 
-  public Map<String, List<String>> getProperties() {
+  public Map<String, List<T>> getProperties() {
     return properties;
   }
 
@@ -45,7 +45,7 @@ public class OwlDetailsProperties {
     SortedSet<String> keys = new TreeSet<>(comparator);
     keys.addAll(properties.keySet());
 
-    Map<String, List<String>> result = new LinkedHashMap<>();
+    Map<String, List<T>> result = new LinkedHashMap<>();
     keys.forEach((key) -> {
       result.put(key, properties.get(key));
     });
