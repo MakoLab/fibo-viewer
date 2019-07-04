@@ -22,10 +22,7 @@ public class SearchService {
   private WeaselOntologyManager ontologyManager;
 
   public void search(String query, ModelBuilder mb) {
-    List<OwlDetails> weaselTerms;
-    OwlDetails wd = ontologyManager.getDetailsByIri(query);
-    weaselTerms = new LinkedList<>();
-    weaselTerms.add(wd);
+    List<OwlDetails> weaselTerms = ontologyManager.getDetailsByIri(query);
     mb.setQuery(query)
         .ontoDetails(weaselTerms);
   }

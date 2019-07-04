@@ -10,7 +10,7 @@ import java.util.Map;
 public class OwlDetails {
 
   private String label;
-  private OwlDetailsProperties<OwlAnnotationPropertyValue> properties;
+  private OwlDetailsProperties<PropertyValue> properties;
   private String type;
 
   public OwlDetails() {
@@ -27,7 +27,7 @@ public class OwlDetails {
     this.label = label;
   }
 
-  public Map<String, List<OwlAnnotationPropertyValue>> getProperties() {
+  public Map<String, List<PropertyValue>> getProperties() {
     return properties.getProperties();
   }
 
@@ -47,7 +47,7 @@ public class OwlDetails {
     properties.sort(priorityList);
   }
 
-  public void addAllProperties(OwlDetailsProperties<OwlAnnotationPropertyValue> axioms) {
+  public void addAllProperties(OwlDetailsProperties<PropertyValue> axioms) {
     axioms.getProperties().entrySet().forEach((entry) -> {
       entry.getValue().forEach((propertyValue) -> {
         properties.addProperty(entry.getKey(), propertyValue);

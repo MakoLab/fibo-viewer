@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class WeaselComparators {
 
- public static Comparator<String> getComparatorWithPriority(List<String> prioritySortList) {
+ public static  Comparator<String> getComparatorWithPriority(List<String> prioritySortList) {
     return (String obj1, String obj2) -> {
 
       if (obj1 == obj2) {

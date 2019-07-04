@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix = "weasel" uri = "tags/propertyRender.tld"%>
 
 <!DOCTYPE HTML>
 <html>
@@ -14,14 +15,14 @@
 
     <div class="container-fluid">
       <div class="row px-4 py-4">
-
+        
         <div class="col-md-12 px-2">
 
           <div class="card">
             <div class="card-body">
               <c:choose>
                 <c:when test="${details_display}">
-                  <jsp:directive.include file="page/elements/classList.jsp" />
+                  <jsp:directive.include file="page/elements/view.jsp" />
                 </c:when>
                 <c:otherwise>
                   Operation not supported...

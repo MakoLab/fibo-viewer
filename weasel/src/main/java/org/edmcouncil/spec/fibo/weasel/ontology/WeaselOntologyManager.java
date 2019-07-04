@@ -71,24 +71,33 @@ public class WeaselOntologyManager {
     return ontology;
   }
 
-  public OwlDetails getDetailsByIri(String iriString) {
-    OwlDetails wd = null;
+  public List<OwlDetails> getDetailsByIri(String iriString) {
     IRI iri = IRI.create(iriString);
+    List<OwlDetails> result = new LinkedList<>();
 
     if (ontology.containsClassInSignature(iri)) {
       LOGGER.debug("Handle class data.");
-      wd = dataHandler.handleParticularClass(iri, this.ontology);
+      OwlDetails wd = dataHandler.handleParticularClass(iri, this.ontology);
+      result.add(wd);
     }
     if (ontology.containsDataPropertyInSignature(iri)) {
       LOGGER.info("Handle data property.");
       LOGGER.info("Data property not supported yet.");
-      //wd = handleParticularDataProperty(iri);
+      OwlDetails wd = dataHandler.handleParticularDataProperty(iri, ontology);;
+      result.add(wd);
+    }
+    if (ontology.containsObjectPropertyInSignature(iri)) {
+      LOGGER.info("Handle object property.");
+      LOGGER.info("Data property not supported yet.");
+      OwlDetails wd = dataHandler.handleParticularObjectProperty(iri, ontology);;
+      result.add(wd);
     }
     if (ontology.containsIndividualInSignature(iri)) {
       LOGGER.info("Handle individual data.");
-      wd = dataHandler.handleParticularIndividual(iri, ontology);
+      OwlDetails wd = dataHandler.handleParticularIndividual(iri, ontology);
+      result.add(wd);
     }
-    return wd;
+    return result;
   }
 
   

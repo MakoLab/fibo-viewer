@@ -17,7 +17,7 @@
             <div class="card-body">
               <c:choose>
                 <c:when test="${details_display}">
-                  <jsp:directive.include file="page/elements/classList.jsp" />
+                  <jsp:directive.include file="page/elements/view.jsp" />
                 </c:when>
                 <c:otherwise>
                   There is nothing to display... 

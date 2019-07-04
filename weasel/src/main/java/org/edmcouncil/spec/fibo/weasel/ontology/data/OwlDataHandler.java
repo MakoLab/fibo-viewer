@@ -18,6 +18,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
+import org.edmcouncil.spec.fibo.weasel.model.PropertyValue;
+import org.edmcouncil.spec.fibo.weasel.model.impl.OwlAxiomPropertyValue;
+import org.edmcouncil.spec.fibo.weasel.ontology.visitor.WeaselOntologyVisitors;
+import org.semanticweb.owlapi.model.AxiomType;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDataPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAxiom;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,8 +56,8 @@ public class OwlDataHandler {
 
         resultDetails.setLabel(clazz.getIRI().getShortForm());
 
-        OwlDetailsProperties<OwlAnnotationPropertyValue> axioms = handleAxioms(clazz, ontology);
-        OwlDetailsProperties<OwlAnnotationPropertyValue> annotations
+        OwlDetailsProperties<PropertyValue> axioms = handleAxioms(clazz, ontology);
+        OwlDetailsProperties<PropertyValue> annotations
             = handleAnnotations(clazz.getIRI(), ontology);
 
         resultDetails.addAllProperties(axioms);
@@ -69,9 +81,9 @@ public class OwlDataHandler {
 
         resultDetails.setLabel(individual.getIRI().getShortForm());
 
-        OwlDetailsProperties<OwlAnnotationPropertyValue> axioms = handleAxioms(individual, ontology);
+        OwlDetailsProperties<PropertyValue> axioms = handleAxioms(individual, ontology);
 
-        OwlDetailsProperties<OwlAnnotationPropertyValue> annotations
+        OwlDetailsProperties<PropertyValue> annotations
             = handleAnnotations(individual.getIRI(), ontology);
 
         resultDetails.addAllProperties(axioms);
@@ -83,8 +95,8 @@ public class OwlDataHandler {
     return resultDetails;
   }
 
-  private OwlDetailsProperties<OwlAnnotationPropertyValue> handleAnnotations(IRI iri, OWLOntology ontology) {
-    OwlDetailsProperties<OwlAnnotationPropertyValue> result = new OwlDetailsProperties<>();
+  private OwlDetailsProperties<PropertyValue> handleAnnotations(IRI iri, OWLOntology ontology) {
+    OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<>();
 
     Iterator<OWLAnnotationAssertionAxiom> annotationAssertionAxiom
         = ontology.annotationAssertionAxioms(iri).iterator();
@@ -108,44 +120,125 @@ public class OwlDataHandler {
     return result;
   }
 
-  private OwlDetailsProperties<OwlAnnotationPropertyValue> handleAxioms(
+  private OwlDetailsProperties<PropertyValue> handleAxioms(
       OWLNamedIndividual obj,
       OWLOntology ontology) {
-    OwlDetailsProperties<OwlAnnotationPropertyValue> result = new OwlDetailsProperties<>();
 
     Iterator<OWLIndividualAxiom> axiomsIterator = ontology.axioms(obj).iterator();
+    return handleAxioms(axiomsIterator);
+  }
+  private OwlDetailsProperties<PropertyValue> handleAxioms(
+      OWLObjectProperty obj,
+      OWLOntology ontology) {
+
+    Iterator<OWLObjectPropertyAxiom> axiomsIterator = ontology.axioms(obj).iterator();
+    return handleAxioms(axiomsIterator);
+  }
+  private OwlDetailsProperties<PropertyValue> handleAxioms(
+      OWLDataProperty obj,
+      OWLOntology ontology) {
+
+    Iterator<OWLDataPropertyAxiom> axiomsIterator = ontology.axioms(obj).iterator();
+    return handleAxioms(axiomsIterator);
+  }
+
+  private OwlDetailsProperties<PropertyValue> handleAxioms(
+      OWLClass obj,
+      OWLOntology ontology) {
+
+    Iterator<OWLClassAxiom> axiomsIterator = ontology.axioms(obj).iterator();
+    return handleAxioms(axiomsIterator);
+  }
+
+  private < T extends OWLAxiom> OwlDetailsProperties<PropertyValue> handleAxioms(
+      Iterator<T> axiomsIterator) {
+    OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<>();
+
     while (axiomsIterator.hasNext()) {
-      OWLIndividualAxiom axiom = axiomsIterator.next();
+      T axiom = axiomsIterator.next();
       String value = rendering.render(axiom);
       String key = axiom.getAxiomType().getName();
-      OwlAnnotationPropertyValue opv = new OwlAnnotationPropertyValue();
+      OwlAxiomPropertyValue opv = new OwlAxiomPropertyValue();
       opv.setValue(value);
       //TODO: Use it correctly
-      opv.setType(PropertyType.STRING);
+      opv.setType(PropertyType.AXIOM);
       result.addProperty(key, opv);
-      LOGGER.debug("Fing axiom \"{}\" with type \"{}\"", value, key);
+      LOGGER.debug("Find Axiom \"{}\" with type \"{}\"", value, key);
+      Boolean isRestriction = isRestriction(axiom);
+
+      if (!isRestriction && axiom.getAxiomType().equals(AxiomType.SUBCLASS_OF)) {
+        LOGGER.debug("Find non restriction SubClassOf");
+      }
+
+      Iterator<OWLEntity> iterator = axiom.signature().iterator();
+      while (iterator.hasNext()) {
+        OWLEntity next = iterator.next();
+        String eSignature = rendering.render(next);
+        String eIri = next.getIRI().toString();
+        opv.addEntityValues(eSignature, eIri);
+      }
     }
     return result;
   }
 
-  private OwlDetailsProperties<OwlAnnotationPropertyValue> handleAxioms(
-      OWLClass obj,
-      OWLOntology ontology) {
-    OwlDetailsProperties<OwlAnnotationPropertyValue> result = new OwlDetailsProperties<>();
-
-    Iterator<OWLClassAxiom> axiomsIterator = ontology.axioms(obj).iterator();
-    while (axiomsIterator.hasNext()) {
-      OWLClassAxiom axiom = axiomsIterator.next();
-      String value = rendering.render(axiom);
-      String key = axiom.getAxiomType().getName();
-      OwlAnnotationPropertyValue opv = new OwlAnnotationPropertyValue();
-      opv.setValue(value);
-      //TODO: Use it correctly
-      opv.setType(PropertyType.STRING);
-      result.addProperty(key, opv);
-      LOGGER.debug("Fing axiom \"{}\" with type \"{}\"", value, key);
+  private static <T extends OWLAxiom> Boolean isRestriction(T axiom) {
+    Boolean isRestriction = axiom.accept(WeaselOntologyVisitors.isRestrictionVisitor);
+    if (isRestriction == null) {
+      isRestriction = Boolean.FALSE;
     }
-    return result;
+    return isRestriction;
+  }
+
+  public OwlDetails handleParticularDataProperty(IRI iri, OWLOntology ontology) {
+     OwlDetails resultDetails = new OwlDetails();
+    Iterator<OWLDataProperty> dataPropertyIt = ontology.dataPropertiesInSignature().iterator();
+
+    while (dataPropertyIt.hasNext()) {
+      OWLDataProperty dataProperty = dataPropertyIt.next();
+
+      if (dataProperty.getIRI().equals(iri)) {
+        LOGGER.debug("Find owl named individual wih iri: {}", iri.toString());
+
+        resultDetails.setLabel(dataProperty.getIRI().getShortForm());
+
+        OwlDetailsProperties<PropertyValue> axioms = handleAxioms(dataProperty, ontology);
+
+        OwlDetailsProperties<PropertyValue> annotations
+            = handleAnnotations(dataProperty.getIRI(), ontology);
+
+        resultDetails.addAllProperties(axioms);
+        resultDetails.addAllProperties(annotations);
+      }
+    }
+    resultDetails.sortProperties(new LinkedList<>());
+    //wd.sortProperties(prioritySortList);
+    return resultDetails;
+    
+  }
+
+  public OwlDetails handleParticularObjectProperty(IRI iri, OWLOntology ontology) {
+     OwlDetails resultDetails = new OwlDetails();
+    Iterator<OWLObjectProperty> dataPropertyIt = ontology.objectPropertiesInSignature().iterator();
+
+    while (dataPropertyIt.hasNext()) {
+      OWLObjectProperty dataProperty = dataPropertyIt.next();
+
+      if (dataProperty.getIRI().equals(iri)) {
+        LOGGER.debug("Find owl named individual wih iri: {}", iri.toString());
+
+        resultDetails.setLabel(dataProperty.getIRI().getShortForm());
+
+        OwlDetailsProperties<PropertyValue> axioms = handleAxioms(dataProperty, ontology);
+
+        OwlDetailsProperties<PropertyValue> annotations
+            = handleAnnotations(dataProperty.getIRI(), ontology);
+
+        resultDetails.addAllProperties(axioms);
+        resultDetails.addAllProperties(annotations);
+      }
+    }
+    resultDetails.sortProperties(new LinkedList<>());
+    return resultDetails;
   }
 
 }
