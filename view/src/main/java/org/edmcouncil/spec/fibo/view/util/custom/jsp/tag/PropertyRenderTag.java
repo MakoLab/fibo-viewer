@@ -1,8 +1,8 @@
 package org.edmcouncil.spec.fibo.view.util.custom.jsp.tag;
 
 import org.edmcouncil.spec.fibo.weasel.model.PropertyValue;
-import org.edmcouncil.spec.fibo.weasel.model.impl.OwlAnnotationPropertyValue;
-import org.edmcouncil.spec.fibo.weasel.model.impl.OwlAxiomPropertyValue;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlAnnotationPropertyValue;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlAxiomPropertyValue;
 import java.io.IOException;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -41,7 +41,7 @@ public class PropertyRenderTag extends SimpleTagSupport {
   public void doTag()
       throws JspException, IOException {
 
-    JspContext context = getJspContext();
+    //JspContext context = getJspContext();
     
     switch (property.getType()) {
       case STRING:
@@ -163,7 +163,6 @@ public class PropertyRenderTag extends SimpleTagSupport {
 
   private String wrapElement(String result) {
     result = String.format(WRAPPER_PATTERN, elementWrapper, result);
-    System.out.println(result);
     return result;
   }
 

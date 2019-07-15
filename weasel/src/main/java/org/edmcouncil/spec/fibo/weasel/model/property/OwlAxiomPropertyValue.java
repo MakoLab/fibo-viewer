@@ -1,8 +1,7 @@
-package org.edmcouncil.spec.fibo.weasel.model.impl;
+package org.edmcouncil.spec.fibo.weasel.model.property;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.edmcouncil.spec.fibo.weasel.model.PropertyValueAbstract;
 
 /**
  * Create by Michał Daniel (michal.daniel@makolab.com)

@@ -1,8 +1,11 @@
 package org.edmcouncil.spec.fibo.weasel.model;
 
-import org.edmcouncil.spec.fibo.weasel.model.impl.OwlAnnotationPropertyValue;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlDetailsProperties;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlAnnotationPropertyValue;
 import java.util.List;
 import java.util.Map;
+import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyElementImpl;
+import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyImpl;
 
 /**
  * Create by Michał Daniel (michal.daniel@makolab.com)
@@ -12,6 +15,7 @@ public class OwlDetails {
   private String label;
   private OwlDetailsProperties<PropertyValue> properties;
   private String type;
+  private OwlTaxonomyImpl taxonomy;
 
   public OwlDetails() {
     if (properties == null) {
@@ -41,6 +45,14 @@ public class OwlDetails {
 
   public void addProperty(String key, OwlAnnotationPropertyValue property) {
     properties.addProperty(key, property);
+  }
+
+  public void setTaxonomy(OwlTaxonomyImpl tax) {
+    this.taxonomy = tax;
+  }
+
+  public OwlTaxonomy getTaxonomy() {
+    return this.taxonomy;
   }
 
   public void sortProperties(List<String> priorityList) {

@@ -1,5 +1,6 @@
-package org.edmcouncil.spec.fibo.weasel.model;
+package org.edmcouncil.spec.fibo.weasel.model.property;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,12 +16,12 @@ import org.edmcouncil.spec.fibo.weasel.comparator.WeaselComparators;
  */
 public class OwlDetailsProperties<T> {
 
+  private List taxonomy;
   private Map<String, List<T>> properties;
 
   public OwlDetailsProperties() {
     properties = new HashMap<>();
   }
-  
 
   public void addProperty(String key, T property) {
     if (this.properties == null) {
@@ -36,11 +37,23 @@ public class OwlDetailsProperties<T> {
     properties.put(key, propertiesList);
   }
 
+  public void addTaxonomy(String tax) {
+    if (this.taxonomy == null) {
+      this.taxonomy = new LinkedList();
+    }
+
+    this.taxonomy.add(tax);
+  }
+
+  public List getTaxonomy() {
+    return taxonomy == null ? new ArrayList(0) : taxonomy;
+  }
+
   public Map<String, List<T>> getProperties() {
     return properties;
   }
 
-  public void sort(List<String> priotityList){
+  public void sort(List<String> priotityList) {
     Comparator<String> comparator = WeaselComparators.getComparatorWithPriority(priotityList);
     SortedSet<String> keys = new TreeSet<>(comparator);
     keys.addAll(properties.keySet());
@@ -51,5 +64,5 @@ public class OwlDetailsProperties<T> {
     });
     properties = result;
   }
-  
+
 }

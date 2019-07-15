@@ -1,6 +1,6 @@
 package org.edmcouncil.spec.fibo.weasel.ontology.data;
 
-import org.edmcouncil.spec.fibo.weasel.model.PropertyType;
+import org.edmcouncil.spec.fibo.weasel.model.WeaselOwlType;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.springframework.stereotype.Component;
 
@@ -10,20 +10,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class OwlDataExtractor {
 
-  public PropertyType extractAnnotationType(OWLAnnotationAssertionAxiom next) {
+  public WeaselOwlType extractAnnotationType(OWLAnnotationAssertionAxiom next) {
     if (next.getValue().isIRI()) {
-      return PropertyType.IRI;
+      return WeaselOwlType.IRI;
     } else if (next.getValue().isLiteral()) {
       String datatype = next.getValue().asLiteral().get().getDatatype().toString();
       //TODO: move this strings to list and use contains
       if (datatype.equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString")
           || datatype.equals("http://www.w3.org/2001/XMLSchema#string")) {
-        return PropertyType.STRING;
+        return WeaselOwlType.STRING;
       } else if (datatype.equals("xsd:anyURI")) {
-        return PropertyType.ANY_URI;
+        return WeaselOwlType.ANY_URI;
       }
     }
-    return PropertyType.OTHER;
+    return WeaselOwlType.OTHER;
   }
 
   public String extractAnyUriToString(String anyUri) {

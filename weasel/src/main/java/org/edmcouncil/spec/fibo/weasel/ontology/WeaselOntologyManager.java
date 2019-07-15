@@ -77,18 +77,16 @@ public class WeaselOntologyManager {
 
     if (ontology.containsClassInSignature(iri)) {
       LOGGER.debug("Handle class data.");
-      OwlDetails wd = dataHandler.handleParticularClass(iri, this.ontology);
+      OwlDetails wd = dataHandler.handleParticularClass(iri, ontology);
       result.add(wd);
     }
     if (ontology.containsDataPropertyInSignature(iri)) {
       LOGGER.info("Handle data property.");
-      LOGGER.info("Data property not supported yet.");
       OwlDetails wd = dataHandler.handleParticularDataProperty(iri, ontology);;
       result.add(wd);
     }
     if (ontology.containsObjectPropertyInSignature(iri)) {
       LOGGER.info("Handle object property.");
-      LOGGER.info("Data property not supported yet.");
       OwlDetails wd = dataHandler.handleParticularObjectProperty(iri, ontology);;
       result.add(wd);
     }

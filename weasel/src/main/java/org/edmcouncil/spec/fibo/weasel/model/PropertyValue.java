@@ -5,9 +5,9 @@ package org.edmcouncil.spec.fibo.weasel.model;
  */
 public interface PropertyValue<T> {
 
-  PropertyType getType();
+  WeaselOwlType getType();
 
-  void setType(PropertyType type);
+  void setType(WeaselOwlType type);
 
   T getValue();
 

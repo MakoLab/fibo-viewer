@@ -1,6 +1,4 @@
-package org.edmcouncil.spec.fibo.weasel.model.impl;
-
-import org.edmcouncil.spec.fibo.weasel.model.PropertyValueAbstract;
+package org.edmcouncil.spec.fibo.weasel.model.property;
 
 /**
  * Create by Michał Daniel (michal.daniel@makolab.com)

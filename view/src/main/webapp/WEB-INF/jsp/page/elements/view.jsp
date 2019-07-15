@@ -6,6 +6,26 @@
     <div class="row">
       <b class="custom-link text-primary">${clazz.label}</b>
     </div>
+
+    <c:if test="${not empty clazz.taxonomy}">
+      <div class="row my-3">
+        <div class="col">
+          <nav aria-label="breadcrumb" class="">
+            <c:forEach items="${clazz.taxonomy.value}" var="taxonomyList">
+              <div class="row my-0 py-0">
+                <ol  class="breadcrumb my-0 py-0 col-12">
+                  <c:forEach items="${taxonomyList}" var="taxEle">
+                    <li class="breadcrumb-item" aria-current="page">${taxEle.getValueA().getValue()}</li>
+                  </c:forEach>
+                </ol>
+              </div>
+            </c:forEach>
+          </nav>
+        </div>
+      </div>
+    </c:if>
+
+
     <c:set var = "context" value = "http://localhost:8080"/>
     <c:forEach var="entry" items="${clazz.properties}">
       <div class="row">
