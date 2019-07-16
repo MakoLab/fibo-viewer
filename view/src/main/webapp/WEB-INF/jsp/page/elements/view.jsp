@@ -1,4 +1,5 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<c:set var = "context" value = "http://localhost:8080"/>
 
 <c:forEach items="${details_list}" var="clazz">
   <div class="my-3 px-3">
@@ -15,7 +16,7 @@
               <div class="row my-0 py-0">
                 <ol  class="breadcrumb my-0 py-0 col-12">
                   <c:forEach items="${taxonomyList}" var="taxEle">
-                    <li class="breadcrumb-item" aria-current="page">${taxEle.getValueA().getValue()}</li>
+                    <li class="breadcrumb-item" aria-current="page"><weasel:RenderTaxonomyElement element="${taxEle}" searchPath="${context}"/></li>
                   </c:forEach>
                 </ol>
               </div>
@@ -25,8 +26,6 @@
       </div>
     </c:if>
 
-
-    <c:set var = "context" value = "http://localhost:8080"/>
     <c:forEach var="entry" items="${clazz.properties}">
       <div class="row">
         <c:choose>

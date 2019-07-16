@@ -73,7 +73,7 @@ public class OwlDataHandler {
         OwlTaxonomyImpl tax = extractTaxonomy(subclasses, iri, ontology);
         tax.sort();
         LOGGER.debug(tax.toString());
-        
+
         resultDetails.setTaxonomy(tax);
         OwlDetailsProperties<PropertyValue> annotations
             = handleAnnotations(clazz.getIRI(), ontology);
@@ -176,9 +176,9 @@ public class OwlDataHandler {
 
       for (PropertyValue property : subclasses) {
         if (property.getType().equals(WeaselOwlType.TAXONOMY)) {
-          OwlAxiomPropertyValue taxProp = (OwlAxiomPropertyValue) property;
+          OwlAxiomPropertyValue axiomProperty = (OwlAxiomPropertyValue) property;
           //taxProp.g
-          IRI sci = extractSubclassIri(taxProp.getEntityMaping(), objIri);
+          IRI sci = extractSubclassIri(axiomProperty.getEntityMaping(), objIri);
           OWLEntity clazz = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLClass(sci);
           LOGGER.debug(">> {} subClassOf {}", objIri.getShortForm(), clazz.getIRI().getShortForm());
           List<PropertyValue> subclassesTax = getSubclasses(clazz, ontology);
@@ -191,7 +191,7 @@ public class OwlDataHandler {
           val1.setValue(objIri.getFragment());//<---!
           OwlTaxonomyValue val2 = new OwlTaxonomyValue();
           val2.setType(WeaselOwlType.IRI);
-          val2.setValue(taxProp.getEntityMaping().get(objIri.getFragment()));//<---!
+          val2.setValue(objIri.getIRIString());//<---!
           taxEl.setValueA(val1);
           taxEl.setValueB(val2);
 

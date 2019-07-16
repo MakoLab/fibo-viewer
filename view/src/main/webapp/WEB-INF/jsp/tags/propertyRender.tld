@@ -30,4 +30,30 @@
     </attribute>
    
   </tag>
+  <tag>
+    <name>RenderTaxonomyElement</name>
+    <tag-class>org.edmcouncil.spec.fibo.view.util.custom.jsp.tag.TaxonomyElementRenderTag</tag-class>
+    <body-content>scriptless</body-content>
+      
+    <attribute>
+      <name>element</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <fragment>true</fragment>
+      <type>org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyElementImpl</type>
+    </attribute>
+    <attribute>
+      <name>elementWrapper</name>
+      <required>false</required>
+      <type>java.util.String</type>
+    </attribute>
+    <attribute>
+      <name>searchPath</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <fragment>true</fragment>
+      <type>java.util.String</type>
+    </attribute>
+   
+  </tag>
 </taglib>
