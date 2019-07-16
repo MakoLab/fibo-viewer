@@ -1,5 +1,7 @@
 package org.edmcouncil.spec.fibo.weasel.model.taxonomy;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import org.edmcouncil.spec.fibo.weasel.model.OwlTaxonomy;
@@ -37,7 +39,10 @@ public class OwlTaxonomyImpl implements OwlTaxonomy<OwlTaxonomyElementImpl> {
       //list.add(0,taxEl);
       value.add(list);
     }
-
+  }
+  
+  public void sort(){
+    Collections.sort(value, Comparator.comparing(List::size));
   }
 
   @Override
