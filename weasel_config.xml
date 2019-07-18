@@ -12,7 +12,7 @@
 	
 	<groups><!--The order of elements in groups will be their priority-->
 		<group>
-			<groupName>Definitions</groupName>
+			<groupName>Definition</groupName>
 			<groupElement>label</groupElement>
 			<groupElement>definition</groupElement>
 			<groupElement>synonym</groupElement>
