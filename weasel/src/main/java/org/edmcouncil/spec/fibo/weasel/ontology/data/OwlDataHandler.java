@@ -21,10 +21,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import org.edmcouncil.spec.fibo.weasel.model.OwlTaxonomy;
+import java.util.stream.Stream;
 import org.edmcouncil.spec.fibo.weasel.model.PropertyValue;
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlAxiomPropertyValue;
 import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyElementImpl;
@@ -38,8 +36,9 @@ import org.semanticweb.owlapi.model.OWLDataPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
-import org.semanticweb.owlapi.model.parameters.AxiomAnnotations;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.springframework.stereotype.Component;
 
 /**
@@ -69,10 +68,14 @@ public class OwlDataHandler {
         OwlDetailsProperties<PropertyValue> axioms = handleAxioms(clazz, ontology);
 
         List<PropertyValue> subclasses = axioms.getProperties().getOrDefault(AxiomType.SUBCLASS_OF.getName(), new ArrayList<>(0));
+        List<PropertyValue> taxElements = subclasses.stream().filter((pv) -> (pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
+        subclasses = subclasses.stream().filter((pv) -> (!pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
 
-        OwlTaxonomyImpl tax = extractTaxonomy(subclasses, iri, ontology);
+        axioms.getProperties().put(AxiomType.SUBCLASS_OF.getName(), subclasses);
+        //axioms.addProperty(AxiomType.SUBCLASS_OF.getName(), subclasses);
+        OwlTaxonomyImpl tax = extractTaxonomy(taxElements, iri, ontology, WeaselOwlType.AXIOM_CLASS);
         tax.sort();
-        LOGGER.debug(tax.toString());
+        //LOGGER.debug(tax.toString());
 
         resultDetails.setTaxonomy(tax);
         OwlDetailsProperties<PropertyValue> annotations
@@ -82,8 +85,6 @@ public class OwlDataHandler {
         resultDetails.addAllProperties(annotations);
       }
     }
-    resultDetails.sortProperties(new LinkedList<>());
-    //wd.sortProperties(prioritySortList);
     return resultDetails;
   }
 
@@ -108,8 +109,6 @@ public class OwlDataHandler {
         resultDetails.addAllProperties(annotations);
       }
     }
-    resultDetails.sortProperties(new LinkedList<>());
-    //wd.sortProperties(prioritySortList);
     return resultDetails;
   }
 
@@ -170,30 +169,24 @@ public class OwlDataHandler {
     return handleAxioms(axiomsIterator);
   }
 
-  private OwlTaxonomyImpl extractTaxonomy(List<PropertyValue> subclasses, IRI objIri, OWLOntology ontology) {
+  private OwlTaxonomyImpl extractTaxonomy(List<PropertyValue> subElements, IRI objIri, OWLOntology ontology, WeaselOwlType type) {
     OwlTaxonomyImpl taxonomy = new OwlTaxonomyImpl();
-    if (subclasses.size() > 0) {
+    if (subElements.size() > 0) {
 
-      for (PropertyValue property : subclasses) {
+      for (PropertyValue property : subElements) {
         if (property.getType().equals(WeaselOwlType.TAXONOMY)) {
           OwlAxiomPropertyValue axiomProperty = (OwlAxiomPropertyValue) property;
           //taxProp.g
-          IRI sci = extractSubclassIri(axiomProperty.getEntityMaping(), objIri);
-          OWLEntity clazz = ontology.getOWLOntologyManager().getOWLDataFactory().getOWLClass(sci);
-          LOGGER.debug(">> {} subClassOf {}", objIri.getShortForm(), clazz.getIRI().getShortForm());
-          List<PropertyValue> subclassesTax = getSubclasses(clazz, ontology);
+          IRI sci = extractSubElementIri(axiomProperty, objIri);
+          OWLEntity entity = createEntity(ontology, sci, type);
+          LOGGER.debug(">> {} Sub Element Of {}", objIri.getShortForm(), entity.getIRI().getShortForm());
+          List<PropertyValue> subTax = getSubElements(entity, ontology, type);
 
-          OwlTaxonomyImpl subCLassTax = extractTaxonomy(subclassesTax, clazz.getIRI(), ontology);
+          OwlTaxonomyImpl subCLassTax = extractTaxonomy(subTax, entity.getIRI(), ontology, type);
 
-          OwlTaxonomyElementImpl taxEl = new OwlTaxonomyElementImpl();
-          OwlTaxonomyValue val1 = new OwlTaxonomyValue();
-          val1.setType(WeaselOwlType.STRING);
-          val1.setValue(objIri.getFragment());//<---!
-          OwlTaxonomyValue val2 = new OwlTaxonomyValue();
-          val2.setType(WeaselOwlType.IRI);
-          val2.setValue(objIri.getIRIString());//<---!
-          taxEl.setValueA(val1);
-          taxEl.setValueB(val2);
+          OwlTaxonomyValue val1 = new OwlTaxonomyValue(WeaselOwlType.STRING, objIri.getFragment());
+          OwlTaxonomyValue val2 = new OwlTaxonomyValue(WeaselOwlType.IRI, objIri.getIRIString());
+          OwlTaxonomyElementImpl taxEl = new OwlTaxonomyElementImpl(val1, val2);
 
           if (subCLassTax.getValue().size() > 0) {
             taxonomy.addTaxonomy(subCLassTax, taxEl);
@@ -202,22 +195,15 @@ public class OwlDataHandler {
             currentTax.add(taxEl);
             taxonomy.addTaxonomy(currentTax);
           }
-
         }
       }
 
     } else {
 
-      LOGGER.info("taxonomy leaf on {}", objIri.getFragment());
-      OwlTaxonomyElementImpl taxEl = new OwlTaxonomyElementImpl();
-      OwlTaxonomyValue val1 = new OwlTaxonomyValue();
-      val1.setType(WeaselOwlType.STRING);
-      val1.setValue(objIri.getFragment());//<---!
-      OwlTaxonomyValue val2 = new OwlTaxonomyValue();
-      val2.setType(WeaselOwlType.IRI);
-      val2.setValue(objIri.getIRIString());//<---!
-      taxEl.setValueA(val1);
-      taxEl.setValueB(val2);
+      LOGGER.info(">>> End leaf on {}", objIri.getFragment());
+      OwlTaxonomyValue val1 = new OwlTaxonomyValue(WeaselOwlType.STRING, objIri.getFragment());
+      OwlTaxonomyValue val2 = new OwlTaxonomyValue(WeaselOwlType.IRI, objIri.getIRIString());
+      OwlTaxonomyElementImpl taxEl = new OwlTaxonomyElementImpl(val1, val2);
       List<OwlTaxonomyElementImpl> currentTax = new LinkedList<>();
       currentTax.add(taxEl);
       taxonomy.addTaxonomy(currentTax);
@@ -226,7 +212,32 @@ public class OwlDataHandler {
     return taxonomy;
   }
 
-  private < T extends OWLAxiom> OwlDetailsProperties<PropertyValue> handleAxioms(
+  private OWLEntity createEntity(OWLOntology ontology, IRI sci, WeaselOwlType type) {
+
+    switch (type) {
+      case AXIOM_CLASS:
+        return ontology.getOWLOntologyManager().getOWLDataFactory().getOWLClass(sci);
+      case AXIOM_DATA_PROPERTY:
+        return ontology.getOWLOntologyManager().getOWLDataFactory().getOWLDataProperty(sci);
+      case AXIOM_OBJECT_PROPERTY:
+        return ontology.getOWLOntologyManager().getOWLDataFactory().getOWLObjectProperty(sci);
+      case AXIOM_DATATYPE:
+        return ontology.getOWLOntologyManager().getOWLDataFactory().getOWLDatatype(sci);
+    }
+
+    return null;
+  }
+
+  private IRI extractSubElementIri(OwlAxiomPropertyValue axiomProperty, IRI objIri) {
+    for (Map.Entry<String, String> entry : axiomProperty.getEntityMaping().entrySet()) {
+      if (!entry.getValue().equals(objIri.getIRIString())) {
+        return IRI.create(entry.getValue());
+      }
+    }
+    return null;
+  }
+
+  private <T extends OWLAxiom> OwlDetailsProperties<PropertyValue> handleAxioms(
       Iterator<T> axiomsIterator) {
     OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<>();
 
@@ -274,21 +285,24 @@ public class OwlDataHandler {
       OWLDataProperty dataProperty = dataPropertyIt.next();
 
       if (dataProperty.getIRI().equals(iri)) {
-        LOGGER.debug("Find owl named individual wih iri: {}", iri.toString());
+        LOGGER.debug("Find owl data property wih iri: {}", iri.toString());
 
         resultDetails.setLabel(dataProperty.getIRI().getShortForm());
 
         OwlDetailsProperties<PropertyValue> axioms = handleAxioms(dataProperty, ontology);
+
+        List<PropertyValue> subElements = getSubElements(dataProperty, ontology, WeaselOwlType.AXIOM_DATA_PROPERTY);
+        OwlTaxonomyImpl taxonomy = extractTaxonomy(subElements, iri, ontology, WeaselOwlType.AXIOM_DATA_PROPERTY);
+        taxonomy.sort();
 
         OwlDetailsProperties<PropertyValue> annotations
             = handleAnnotations(dataProperty.getIRI(), ontology);
 
         resultDetails.addAllProperties(axioms);
         resultDetails.addAllProperties(annotations);
+        resultDetails.setTaxonomy(taxonomy);
       }
     }
-    resultDetails.sortProperties(new LinkedList<>());
-    //wd.sortProperties(prioritySortList);
     return resultDetails;
 
   }
@@ -301,57 +315,86 @@ public class OwlDataHandler {
       OWLObjectProperty dataProperty = dataPropertyIt.next();
 
       if (dataProperty.getIRI().equals(iri)) {
-        LOGGER.debug("Find owl named individual wih iri: {}", iri.toString());
+        LOGGER.debug("Find owl object property wih iri: {}", iri.toString());
 
         resultDetails.setLabel(dataProperty.getIRI().getShortForm());
 
         OwlDetailsProperties<PropertyValue> axioms = handleAxioms(dataProperty, ontology);
+
+        List<PropertyValue> subElements = getSubElements(dataProperty, ontology, WeaselOwlType.AXIOM_OBJECT_PROPERTY);
+        OwlTaxonomyImpl taxonomy = extractTaxonomy(subElements, iri, ontology, WeaselOwlType.AXIOM_OBJECT_PROPERTY);
+        taxonomy.sort();
 
         OwlDetailsProperties<PropertyValue> annotations
             = handleAnnotations(dataProperty.getIRI(), ontology);
 
         resultDetails.addAllProperties(axioms);
         resultDetails.addAllProperties(annotations);
+        resultDetails.setTaxonomy(taxonomy);
       }
     }
-    resultDetails.sortProperties(new LinkedList<>());
     return resultDetails;
   }
 
-  private IRI extractSubclassIri(Map<String, String> entityMaping, IRI objIri) {
+  private List<PropertyValue> getSubElements(OWLEntity entity, OWLOntology ontology, WeaselOwlType type) {
+    Stream<OWLProperty> propertyStream = null;
+    OWLProperty prop = null;
+    switch (type) {
+      case AXIOM_CLASS:
+        return getSubclasses(ontology, AxiomType.SUBCLASS_OF, entity);
+      case AXIOM_DATA_PROPERTY:
+        prop = entity.asOWLDataProperty();
+        propertyStream = EntitySearcher.getSuperProperties(prop, ontology);
+        break;
+      case AXIOM_OBJECT_PROPERTY:
+        prop = entity.asOWLObjectProperty();
+        propertyStream = EntitySearcher.getSuperProperties(prop, ontology);
+        break;
+    }
+    List<PropertyValue> resultProperties = new LinkedList<>();
 
-    for (Map.Entry<String, String> entry : entityMaping.entrySet()) {
-      if (!entry.getValue().equals(objIri.getIRIString())) {
-        return IRI.create(entry.getValue());
-      }
+    for (OWLProperty owlProperty : propertyStream.collect(Collectors.toSet())) {
+      LOGGER.debug("{} Sub Property Of {}", entity.getIRI().getFragment(), owlProperty.getIRI().getFragment());
+      IRI subClazzIri = entity.getIRI();
+      IRI superClazzIri = owlProperty.getIRI();
+
+      OwlAxiomPropertyValue pv = new OwlAxiomPropertyValue();
+      pv.setType(WeaselOwlType.TAXONOMY);
+      pv.addEntityValues(subClazzIri.getFragment(), subClazzIri.getIRIString());
+      pv.addEntityValues(superClazzIri.getFragment(), superClazzIri.getIRIString());
+      //pv.setValue(rendering.render(owlProperty)); //TODO: can be removed ? 
+      resultProperties.add(pv);
+
     }
 
-    return null;
+    return resultProperties;
   }
 
-  private List<PropertyValue> getSubclasses(OWLEntity clazz, OWLOntology ontology) {
+  private List<PropertyValue> getSubclasses(OWLOntology ontology, AxiomType<OWLSubClassOfAxiom> subType, OWLEntity entity) {
     List<PropertyValue> result = new LinkedList<>();
-
     //make entriess mapping
-    for (final OWLSubClassOfAxiom subClasse : ontology.axioms(AxiomType.SUBCLASS_OF).collect(Collectors.toList())) {
-      if (subClasse.getSuperClass() instanceof OWLClass && subClasse.getSubClass() instanceof OWLClass) {
-        OWLClass superClazz = (OWLClass) subClasse.getSuperClass();
-        OWLClass subClazz = (OWLClass) subClasse.getSubClass();
-        if (subClazz.getIRI().equals(clazz.getIRI())) {
-          IRI subClazzIri = subClazz.getIRI();
-          IRI superClazzIri = superClazz.getIRI();
-          //LOGGER.debug("\t> {} extends {}", subClazzIri.getFragment(), superClazzIri.getFragment());
+    ontology.axioms(subType)
+        .collect(Collectors.toList())
+        .stream()
+        .filter((subClasse)
+            -> (subClasse.getSuperClass() instanceof OWLClass
+        && subClasse.getSubClass() instanceof OWLClass))
+        .forEachOrdered((subClasse) -> {
 
-          OwlAxiomPropertyValue pv = new OwlAxiomPropertyValue();
-          pv.setType(WeaselOwlType.TAXONOMY);
-          pv.addEntityValues(subClazzIri.getFragment(), superClazzIri.getIRIString());
-          pv.setValue(rendering.render(subClasse));
-          result.add(pv);
+          OWLClass superClazz = (OWLClass) subClasse.getSuperClass();
+          OWLClass subClazz = (OWLClass) subClasse.getSubClass();
+          if (subClazz.getIRI().equals(entity.getIRI())) {
+            IRI subClazzIri = subClazz.getIRI();
+            IRI superClazzIri = superClazz.getIRI();
 
-        }
-
-      }
-    }
+            OwlAxiomPropertyValue pv = new OwlAxiomPropertyValue();
+            pv.setType(WeaselOwlType.TAXONOMY);
+            pv.addEntityValues(subClazzIri.getFragment(), subClazzIri.getIRIString());
+            pv.addEntityValues(superClazzIri.getFragment(), superClazzIri.getIRIString());
+            pv.setValue(rendering.render(subClasse));
+            result.add(pv);
+          }
+        });
     return result;
   }
 

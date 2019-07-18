@@ -5,23 +5,26 @@ import org.edmcouncil.spec.fibo.weasel.model.property.OwlAnnotationPropertyValue
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import org.edmcouncil.spec.fibo.config.configuration.model.ConfigElement;
+import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigGroupsElement;
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigStringElement;
-import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyElementImpl;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlGroupedDetailsProperties;
 import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyImpl;
 
 /**
  * Create by Michał Daniel (michal.daniel@makolab.com)
  */
-public class OwlDetails {
+public class OwlGroupedDetails {
 
   private String label;
-  private OwlDetailsProperties<PropertyValue> properties;
+  private OwlGroupedDetailsProperties<PropertyValue> properties;
   private String type;
-  private OwlTaxonomyImpl taxonomy;
+  private OwlTaxonomy taxonomy;
 
-  public OwlDetails() {
+  public OwlGroupedDetails() {
     if (properties == null) {
-      properties = new OwlDetailsProperties<>();
+      properties = new OwlGroupedDetailsProperties<>();
     }
   }
 
@@ -33,7 +36,7 @@ public class OwlDetails {
     this.label = label;
   }
 
-  public Map<String, List<PropertyValue>> getProperties() {
+  public Map<String, Map<String, List<PropertyValue>>> getProperties() {
     return properties.getProperties();
   }
 
@@ -45,11 +48,11 @@ public class OwlDetails {
     this.type = type;
   }
 
-  public void addProperty(String key, OwlAnnotationPropertyValue property) {
-    properties.addProperty(key, property);
+  public void addProperty(String groupKey, String propertyKey, PropertyValue property) {
+    properties.addProperty(groupKey, propertyKey, property);
   }
 
-  public void setTaxonomy(OwlTaxonomyImpl tax) {
+  public void setTaxonomy(OwlTaxonomy tax) {
     this.taxonomy = tax;
   }
 
@@ -59,14 +62,6 @@ public class OwlDetails {
 
   public void sortProperties(List<ConfigStringElement> priorityList) {
     properties.sort(priorityList);
-  }
-
-  public void addAllProperties(OwlDetailsProperties<PropertyValue> axioms) {
-    axioms.getProperties().entrySet().forEach((entry) -> {
-      entry.getValue().forEach((propertyValue) -> {
-        properties.addProperty(entry.getKey(), propertyValue);
-      });
-    });
   }
 
   @Override
@@ -90,7 +85,7 @@ public class OwlDetails {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final OwlDetails other = (OwlDetails) obj;
+    final OwlGroupedDetails other = (OwlGroupedDetails) obj;
     if (!Objects.equals(this.label, other.label)) {
       return false;
     }
@@ -106,6 +101,9 @@ public class OwlDetails {
     return true;
   }
 
+  public void sortProperties(Set<ConfigElement> groups) {
+   properties.sort(groups);
 
-  
+  }
+
 }

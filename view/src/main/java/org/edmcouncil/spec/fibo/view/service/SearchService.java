@@ -1,10 +1,10 @@
 package org.edmcouncil.spec.fibo.view.service;
 
-import java.util.LinkedList;
-import org.edmcouncil.spec.fibo.weasel.model.OwlDetails;
+import java.util.Collection;
+import org.edmcouncil.spec.fibo.config.configuration.model.AppConfiguration;
+import org.edmcouncil.spec.fibo.config.configuration.model.impl.WeaselConfiguration;
 import org.edmcouncil.spec.fibo.view.util.ModelBuilder;
 import org.edmcouncil.spec.fibo.weasel.ontology.WeaselOntologyManager;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,16 @@ public class SearchService {
 
   @Autowired
   private WeaselOntologyManager ontologyManager;
+  @Autowired
+  private AppConfiguration config;
 
   public void search(String query, ModelBuilder mb) {
-    List<OwlDetails> weaselTerms = ontologyManager.getDetailsByIri(query);
+    Collection weaselTerms = ontologyManager.getDetailsByIri(query);
+    boolean isGrouped = ((WeaselConfiguration) config.getWeaselConfig()).isGrouped();
     mb.setQuery(query)
-        .ontoDetails(weaselTerms);
+        .ontoDetails(weaselTerms)
+        .isGrouped(isGrouped);
+    
   }
 
 }

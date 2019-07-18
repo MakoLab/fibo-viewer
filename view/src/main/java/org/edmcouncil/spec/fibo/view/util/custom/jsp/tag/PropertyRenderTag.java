@@ -6,7 +6,6 @@ import org.edmcouncil.spec.fibo.weasel.model.property.OwlAxiomPropertyValue;
 import java.io.IOException;
 import java.util.Map;
 import java.util.regex.Pattern;
-import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;

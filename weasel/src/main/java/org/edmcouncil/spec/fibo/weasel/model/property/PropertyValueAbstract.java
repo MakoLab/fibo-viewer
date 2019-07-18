@@ -10,7 +10,7 @@ public abstract class PropertyValueAbstract<T> implements PropertyValue<T> {
 
   private WeaselOwlType type;
   private T value;
-
+  
   @Override
   public WeaselOwlType getType() {
     return this.type;

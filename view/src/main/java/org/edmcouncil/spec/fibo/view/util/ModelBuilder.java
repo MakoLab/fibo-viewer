@@ -1,5 +1,6 @@
 package org.edmcouncil.spec.fibo.view.util;
 
+import java.util.Collection;
 import org.edmcouncil.spec.fibo.view.model.Query;
 import org.edmcouncil.spec.fibo.weasel.model.OwlDetails;
 import java.util.List;
@@ -34,11 +35,16 @@ public class ModelBuilder {
     return this;
   }
 
-  public ModelBuilder ontoDetails(List<OwlDetails> details) {
+  public ModelBuilder ontoDetails(Collection details) {
 
     model.addAttribute("details_list", details);
     model.addAttribute("details_display", true);
 
+    return this;
+  }
+
+  public ModelBuilder isGrouped(boolean grouped) {
+    model.addAttribute("grouped_details", grouped);
     return this;
   }
 

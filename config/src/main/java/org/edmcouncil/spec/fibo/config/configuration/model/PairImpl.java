@@ -1,6 +1,6 @@
-package org.edmcouncil.spec.fibo.weasel.model.impl;
+package org.edmcouncil.spec.fibo.config.configuration.model;
 
-import org.edmcouncil.spec.fibo.weasel.model.Pair;
+import org.edmcouncil.spec.fibo.config.configuration.model.Pair;
 
 /**
  *
@@ -13,6 +13,14 @@ public class PairImpl<A, B> implements Pair<A, B> {
 
   private A valA;
   private B valB;
+
+  public PairImpl() {
+  }
+
+  public PairImpl(A valA, B valB) {
+    this.valA = valA;
+    this.valB = valB;
+  }
 
   @Override
   public A getValueA() {

@@ -4,8 +4,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.edmcouncil.spec.fibo.weasel.model.OwlTaxonomy;
-import org.edmcouncil.spec.fibo.weasel.model.Pair;
+import org.edmcouncil.spec.fibo.config.configuration.model.Pair;
 
 /**
  *
@@ -40,8 +41,8 @@ public class OwlTaxonomyImpl implements OwlTaxonomy<OwlTaxonomyElementImpl> {
       value.add(list);
     }
   }
-  
-  public void sort(){
+
+  public void sort() {
     Collections.sort(value, Comparator.comparing(List::size));
   }
 
@@ -58,6 +59,31 @@ public class OwlTaxonomyImpl implements OwlTaxonomy<OwlTaxonomyElementImpl> {
     }
 
     return sb.toString();
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 89 * hash + Objects.hashCode(this.value);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final OwlTaxonomyImpl other = (OwlTaxonomyImpl) obj;
+    if (!Objects.equals(this.value, other.value)) {
+      return false;
+    }
+    return true;
   }
 
 }
