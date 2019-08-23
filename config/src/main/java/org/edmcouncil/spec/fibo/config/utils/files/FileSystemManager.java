@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FileSystemManager{
   private static final String WEASEL_HOME_DIR_NAME = ".weasel";
-  private static final String WEASEL_ONTOLOGY_FILE_NAME = "fibo.rdf";
+  private static final String WEASEL_ONTOLOGY_FILE_NAME = "AboutFIBOProd.rdf";
   private static final String WEASEL_CONFIG_FILE_NAME = "weasel_config.xml";
   private static final String WEASEL_ONTO1 = "onto1.rdf";
   private static final String WEASEL_ONTO2 = "onto2.rdf";
