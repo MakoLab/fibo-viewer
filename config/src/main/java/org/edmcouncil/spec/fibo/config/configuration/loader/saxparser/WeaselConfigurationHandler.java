@@ -5,6 +5,7 @@ import java.util.Set;
 import org.edmcouncil.spec.fibo.config.configuration.model.ConfigElement;
 import org.edmcouncil.spec.fibo.config.configuration.model.ConfigElementType;
 import org.edmcouncil.spec.fibo.config.configuration.model.Configuration;
+import org.edmcouncil.spec.fibo.config.configuration.model.GroupType;
 import org.edmcouncil.spec.fibo.config.configuration.model.WeaselConfigKeys;
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigGroupsElement;
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigStringElement;
@@ -42,6 +43,7 @@ public class WeaselConfigurationHandler extends DefaultHandler {
         break;
       case WeaselConfigKeys.GROUP:
         cge = new ConfigGroupsElement();
+        cge.setGroupType(GroupType.DEFAULT);
         break;
     }
 
@@ -67,6 +69,9 @@ public class WeaselConfigurationHandler extends DefaultHandler {
         break;
       case WeaselConfigKeys.GROUP_ELEMENT:
         cge.addElement(new ConfigStringElement(val));
+        break;
+      case WeaselConfigKeys.GROUP_TYPE:
+       cge.setGroupType(GroupType.valueOf(val));
         break;
     }
 

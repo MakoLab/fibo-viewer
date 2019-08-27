@@ -20,6 +20,7 @@ public class OwlDetailsProperties<T> {
 
   private List taxonomy;
   private Map<String, List<T>> properties;
+  
 
   public OwlDetailsProperties() {
     properties = new HashMap<>();

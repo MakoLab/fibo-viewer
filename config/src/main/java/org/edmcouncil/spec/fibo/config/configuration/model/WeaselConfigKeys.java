@@ -14,5 +14,8 @@ public class WeaselConfigKeys {
   public static final String GROUP = "group";
   public static final String GROUP_NAME = "groupName";
   public static final String GROUP_ELEMENT = "groupElement";
+  public static final String GROUP_TYPE = "groupType";
+
+
 
 }
