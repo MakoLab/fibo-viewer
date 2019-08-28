@@ -21,8 +21,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.naming.spi.DirStateFactory;
 import org.edmcouncil.spec.fibo.config.configuration.model.AppConfiguration;
 import org.edmcouncil.spec.fibo.config.configuration.model.ConfigElementType;
 import org.edmcouncil.spec.fibo.config.configuration.model.PairImpl;
@@ -31,6 +33,7 @@ import org.edmcouncil.spec.fibo.weasel.model.OwlGroupedDetails;
 import org.edmcouncil.spec.fibo.weasel.model.PropertyValue;
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlAxiomPropertyValue;
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlDirectedSubClassesProperty;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlListElementIndividualProperty;
 import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyElementImpl;
 import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyImpl;
 import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyValue;
@@ -46,6 +49,10 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLSubAnnotationPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.reasoner.NodeSet;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
+import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.springframework.stereotype.Component;
 
@@ -82,8 +89,9 @@ public class OwlDataHandler {
         List<PropertyValue> subclasses = axioms.getProperties().getOrDefault(AxiomType.SUBCLASS_OF.getName(), new ArrayList<>(0));
         List<PropertyValue> taxElements = subclasses.stream().filter((pv) -> (pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
         OwlDetailsProperties<PropertyValue> handleSubClassOf = handleParticularSubClassOf(ontology, clazz);
+        OwlDetailsProperties<PropertyValue> individuals = handleListIndividual(ontology, clazz);
 
-        handleListIndividual(iri, ontology, clazz);
+        //handleListIndividual(iri, ontology, clazz);
         subclasses = subclasses.stream().filter((pv) -> (!pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
         axioms.getProperties().put(AxiomType.SUBCLASS_OF.getName(), subclasses);
         //axioms.addProperty(AxiomType.SUBCLASS_OF.getName(), subclasses);
@@ -98,7 +106,7 @@ public class OwlDataHandler {
         resultDetails.addAllProperties(axioms);
         resultDetails.addAllProperties(annotations);
         resultDetails.addAllProperties(handleSubClassOf);
-
+        resultDetails.addAllProperties(individuals);
       }
     }
     return resultDetails;
@@ -418,7 +426,6 @@ public class OwlDataHandler {
     OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<PropertyValue>();
 
     Iterator<OWLSubClassOfAxiom> iterator = ontology.subClassAxiomsForSuperClass(clazz).iterator();
-
     //List<OWLSubClassOfAxiom> result = new LinkedList<>();
     while (iterator.hasNext()) {
       OWLSubClassOfAxiom next = iterator.next();
@@ -429,8 +436,8 @@ public class OwlDataHandler {
 //      result.addAll(result);
       OwlDirectedSubClassesProperty r = new OwlDirectedSubClassesProperty();
       r.setType(WeaselOwlType.DIRECTED_SUBCLASSES);
-      r.setValue(new PairImpl(fragment, iri));
-      result.addProperty("DS", r);
+      r.setValue(new PairImpl(fragment, iri.toString()));
+      result.addProperty(WeaselOwlType.DIRECTED_SUBCLASSES.name(), r);
       // List<OwlGroupedDetails> newResult = new LinkedList<>();
       // newResult.addAll(newResult);
     }
@@ -438,21 +445,49 @@ public class OwlDataHandler {
     return result;
   }
 
-  private OwlDetails handleListIndividual(IRI iri, OWLOntology ontology, OWLClass clazz) {
-    OwlDetails resultDetails = new OwlDetails();
-    Iterator<OWLNamedIndividual> iterator = ontology.individualsInSignature().iterator();
-    List<OWLNamedIndividual> result = new LinkedList<>();
-
-    //Iterator<OWLNamedIndividual> iterator = clazz.individualsInSignature().iterator();
-    while (iterator.hasNext()) {
-      OWLNamedIndividual individual = iterator.next();
-
-      String fragment = iri.getFragment();
-      LOGGER.debug(individual.getIRI().toString());
-      result.add(individual);
-      individual.getEntityType();
-
+  private OwlDetailsProperties<PropertyValue> handleListIndividual(OWLOntology ontology, OWLClass clazz) {
+    OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<PropertyValue>();
+    //Iterator<OWLNamedIndividual> iterator = ontology.individualsInSignature().iterator();
+    //List<OWLNamedIndividual> result = new LinkedList<>();
+    OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
+    OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
+    NodeSet<OWLNamedIndividual> instances = reasoner.getInstances(clazz, true);
+    for (OWLNamedIndividual o : instances.entities().collect(Collectors.toSet())) {
+      String fragment = o.getIRI().getFragment();
+      LOGGER.debug(o.getIRI().toString());
+      OwlListElementIndividualProperty s = new OwlListElementIndividualProperty();
+      s.setType(WeaselOwlType.INSTANCES);
+      s.setValue(new PairImpl(fragment, o.getIRI().toString()));
+      result.addProperty(WeaselOwlType.INSTANCES.name(), s);
+      o.getEntityType();
     }
-    return resultDetails;
+    return result;
   }
+
 }
+
+//result.add(individual);
+// individual.getEntityType();
+//;
+//    }
+//    return resultDetails;
+//  }
+//  
+//    private OwlDetails handleListIndividual_2(IRI iri, OWLOntology ontology, OWLClass clazz) {
+//    OwlDetails resultDetails = new OwlDetails();
+//    Iterator<OWLNamedIndividual> iterator = ontology.individualsInSignature().iterator();
+//    List<OWLNamedIndividual> result = new LinkedList<>();
+//
+//    //Iterator<OWLNamedIndividual> iterator = clazz.individualsInSignature().iterator();
+//    while (iterator.hasNext()) {
+//      OWLNamedIndividual individual = iterator.next();
+//
+//      String fragment = iri.getFragment();
+//      LOGGER.debug(individual.getIRI().toString());
+//      result.add(individual);
+//      individual.getEntityType();
+//
+//    }
+//    return resultDetails;
+//  }
+

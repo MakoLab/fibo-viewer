@@ -184,19 +184,22 @@ public class WeaselOntologyManager {
       for (Map.Entry<String, List<PropertyValue>> entry : owlDetails.getProperties().entrySet()) {
         String propertyKey = entry.getKey();
         String groupName = null;
-        String groupSubClassOf = null; 
+        String groupSubClassOf = null;
         groupName = getGroupName(groups, propertyKey);
- //groupSubClassOf = getDetailsByIri(groups, propertyKey);
- 
+        //groupSubClassOf = getDetailsByIri(groups, propertyKey);
+
         groupName = groupName == null ? DEFAULT_GROUP_NAME : groupName;
         for (PropertyValue property : entry.getValue()) {
           groupedDetails.addProperty(groupName, propertyKey, property);
+
         }
+
       }
       //groupedDetails.
       groupedDetails.setTaxonomy(owlDetails.getTaxonomy());
       groupedDetails.setLabel(owlDetails.getLabel());
       groupedDetails.sortProperties(groups);
+
       newResult.add(groupedDetails);
     }
     return newResult;
@@ -206,8 +209,10 @@ public class WeaselOntologyManager {
     String result = null;
     for (ConfigElement g : groups) {
       ConfigGroupsElement group = (ConfigGroupsElement) g;
-      if (group.contains(propertyKey)) {
-        return group.getName();
+      if (group.getElements() != null && group.getElements().size() > 0) {
+        if (group.contains(propertyKey)) {
+          return group.getName();
+        }
       }
     }
     return result;

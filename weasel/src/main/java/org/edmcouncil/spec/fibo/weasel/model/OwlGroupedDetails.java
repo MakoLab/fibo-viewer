@@ -21,6 +21,7 @@ public class OwlGroupedDetails {
   private OwlGroupedDetailsProperties<PropertyValue> properties;
   private String type;
   private OwlTaxonomy taxonomy;
+ 
 
   public OwlGroupedDetails() {
     if (properties == null) {
