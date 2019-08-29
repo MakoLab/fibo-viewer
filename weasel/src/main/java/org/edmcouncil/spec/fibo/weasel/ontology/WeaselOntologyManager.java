@@ -113,6 +113,7 @@ public class WeaselOntologyManager {
 
   public Collection getDetailsByIri(String iriString) {
     IRI iri = IRI.create(iriString);
+    // TODO: change result type from list to single OwlDetails element.
     List<OwlDetails> result = new LinkedList<>();
 
     if (ontology.containsClassInSignature(iri)) {
@@ -143,6 +144,11 @@ public class WeaselOntologyManager {
         result.add(wd);
       }
     }
+    
+    for (OwlDetails owlDetails : result) {
+      owlDetails.setIri(iriString);
+    }
+    
     if (!config.getWeaselConfig().isEmpty()) {
       WeaselConfiguration cfg = (WeaselConfiguration) config.getWeaselConfig();
       if (cfg.isGrouped()) {
@@ -172,6 +178,7 @@ public class WeaselOntologyManager {
       }
       groupedDetails.setTaxonomy(owlDetails.getTaxonomy());
       groupedDetails.setLabel(owlDetails.getLabel());
+      groupedDetails.setIri(owlDetails.getIri());
       groupedDetails.sortProperties(groups);
 
       newResult.add(groupedDetails);

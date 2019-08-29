@@ -1,16 +1,12 @@
 package org.edmcouncil.spec.fibo.weasel.model;
 
-import org.edmcouncil.spec.fibo.weasel.model.property.OwlDetailsProperties;
-import org.edmcouncil.spec.fibo.weasel.model.property.OwlAnnotationPropertyValue;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import org.edmcouncil.spec.fibo.config.configuration.model.ConfigElement;
-import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigGroupsElement;
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigStringElement;
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlGroupedDetailsProperties;
-import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyImpl;
 
 /**
  * @author Michał Daniel (michal.daniel@makolab.com)
@@ -18,10 +14,10 @@ import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyImpl;
 public class OwlGroupedDetails {
 
   private String label;
+  private String iri;
   private OwlGroupedDetailsProperties<PropertyValue> properties;
   private String type;
   private OwlTaxonomy taxonomy;
- 
 
   public OwlGroupedDetails() {
     if (properties == null) {
@@ -47,6 +43,14 @@ public class OwlGroupedDetails {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  public String getIri() {
+    return iri;
+  }
+
+  public void setIri(String iri) {
+    this.iri = iri;
   }
 
   public void addProperty(String groupKey, String propertyKey, PropertyValue property) {
@@ -103,7 +107,7 @@ public class OwlGroupedDetails {
   }
 
   public void sortProperties(Set<ConfigElement> groups) {
-   properties.sort(groups);
+    properties.sort(groups);
 
   }
 
