@@ -440,7 +440,7 @@ public class OwlDataHandler {
     OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
     OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
     NodeSet<OWLNamedIndividual> instances = reasoner.getInstances(clazz, true);
-    
+
     for (OWLNamedIndividual namedIndividual : instances.entities().collect(Collectors.toSet())) {
       String fragment = namedIndividual.getIRI().getFragment();
       LOGGER.debug(namedIndividual.getIRI().toString());
@@ -453,4 +453,20 @@ public class OwlDataHandler {
     return result;
   }
 
+  
+  
+//  private OwlDetailsProperties<PropertyValue> handleInheritedAxioms(OWLOntology ontology, OWLClass clazz) {
+//    OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<PropertyValue>();
+//
+//    Iterator<OWLSubClassOfAxiom> iterator = ontology.subClassAxiomsForSuperClass(clazz).iterator();
+//
+//    for (PropertyValue clazz :getSubclasses(ontology, org.semanticweb.owlapi.model.AxiomType.SUBCLASS_OF, entity) ) {
+//      OWLSubClassOfAxiom next = iterator.next();
+//      OWLClassExpression superClass = next.getSuperClass();
+////if (property.getType().equals(WeaselOwlType.AXIOM)) {
+//      //  OwlAxiomPropertyValue axiomProperty = (OwlAxiomPropertyValue) property;
+//
+//      //}/
+//    }
+//  }
 }
