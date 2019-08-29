@@ -191,6 +191,7 @@ public class WeaselOntologyManager {
         groupName = groupName == null ? DEFAULT_GROUP_NAME : groupName;
         for (PropertyValue property : entry.getValue()) {
           groupedDetails.addProperty(groupName, propertyKey, property);
+          
 
         }
 

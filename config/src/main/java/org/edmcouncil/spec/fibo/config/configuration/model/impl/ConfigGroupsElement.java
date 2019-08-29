@@ -31,6 +31,7 @@ public class ConfigGroupsElement extends ConfigElementAbstract {
   public void setElements(Set<ConfigStringElement> elements) {
     this.elements = elements;
   }
+  
 
   public ConfigGroupsElement() {
   }
@@ -66,6 +67,7 @@ public class ConfigGroupsElement extends ConfigElementAbstract {
 
   public void setGroupType(GroupType groupType) {
     this.groupType = groupType;
+    addElement(new ConfigStringElement(groupType.name()));
   }
 
   

@@ -435,9 +435,9 @@ public class OwlDataHandler {
       OWLClassExpression superClass = next.getSuperClass();
 //      result.addAll(result);
       OwlDirectedSubClassesProperty r = new OwlDirectedSubClassesProperty();
-      r.setType(WeaselOwlType.DIRECTED_SUBCLASSES);
+      r.setType(WeaselOwlType.DIRECT_SUBCLASSES);
       r.setValue(new PairImpl(fragment, iri.toString()));
-      result.addProperty(WeaselOwlType.DIRECTED_SUBCLASSES.name(), r);
+      result.addProperty(WeaselOwlType.DIRECT_SUBCLASSES.name(), r);
       // List<OwlGroupedDetails> newResult = new LinkedList<>();
       // newResult.addAll(newResult);
     }

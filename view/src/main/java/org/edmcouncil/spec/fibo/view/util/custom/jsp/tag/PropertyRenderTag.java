@@ -60,7 +60,7 @@ public class PropertyRenderTag extends SimpleTagSupport {
       case OTHER:
         renderStringProperty(property);
         break;
-      case DIRECTED_SUBCLASSES:
+      case DIRECT_SUBCLASSES:
         renderDirectedSubclasses(property);
         break;
       case INSTANCES: 
@@ -187,7 +187,7 @@ public class PropertyRenderTag extends SimpleTagSupport {
   private void renderDirectedSubclasses(PropertyValue property) throws IOException {
     OwlDirectedSubClassesProperty subclassProperty = (OwlDirectedSubClassesProperty) property;
     PairImpl value = subclassProperty.getValue();
-    String link = wrapIri((String)value.getValueA(), (String)value.getValueB());
+    String link = wrapIri((String)value.getValueB(), (String)value.getValueA());
     renderProperty(link);
   }
   private void renderInstances(PropertyValue property) throws IOException {
