@@ -4,7 +4,7 @@ import org.edmcouncil.spec.fibo.weasel.model.WeaselOwlType;
 import org.edmcouncil.spec.fibo.weasel.model.property.PropertyValueAbstract;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class OwlTaxonomyValue extends PropertyValueAbstract<String> {
 

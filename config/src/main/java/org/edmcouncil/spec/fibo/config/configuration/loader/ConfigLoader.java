@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class ConfigLoader {
   
@@ -36,8 +36,7 @@ public class ConfigLoader {
         saxParser.parse(configFile, handler);
         
         configuration = handler.getConfiguration();
-        
-        //print employee information
+       
         
     } catch (ParserConfigurationException | SAXException | IOException e) {
         logger.error("Exception while loading configuration: {}", e.getMessage());

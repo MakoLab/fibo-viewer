@@ -1,5 +1,9 @@
 package org.edmcouncil.spec.fibo.view.model;
 
+/**
+ * @author Michał Daniel (michal.daniel@makolab.com)
+ */ 
+
 public class Message {
 	private String msg;
 

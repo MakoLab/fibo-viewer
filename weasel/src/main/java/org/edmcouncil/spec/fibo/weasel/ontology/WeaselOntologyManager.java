@@ -52,10 +52,9 @@ import org.springframework.stereotype.Component;
 import uk.ac.manchester.cs.owl.owlapi.OWLImportsDeclarationImpl;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
- * Create by Patrycja Miazek (patrycja.miazek@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
+ * @author Patrycja Miazek (patrycja.miazek@makolab.com)
  */
-
 @Component
 public class WeaselOntologyManager {
 
@@ -185,19 +184,17 @@ public class WeaselOntologyManager {
       for (Map.Entry<String, List<PropertyValue>> entry : owlDetails.getProperties().entrySet()) {
         String propertyKey = entry.getKey();
         String groupName = null;
-
+        String groupSubClassOf = null;
         groupName = getGroupName(groups, propertyKey);
-
         groupName = groupName == null ? DEFAULT_GROUP_NAME : groupName;
         for (PropertyValue property : entry.getValue()) {
           groupedDetails.addProperty(groupName, propertyKey, property);
         }
       }
-
-      //groupedDetails.
       groupedDetails.setTaxonomy(owlDetails.getTaxonomy());
       groupedDetails.setLabel(owlDetails.getLabel());
       groupedDetails.sortProperties(groups);
+
       newResult.add(groupedDetails);
     }
     return newResult;
@@ -207,8 +204,10 @@ public class WeaselOntologyManager {
     String result = null;
     for (ConfigElement g : groups) {
       ConfigGroupsElement group = (ConfigGroupsElement) g;
-      if (group.contains(propertyKey)) {
-        return group.getName();
+      if (group.getElements() != null && group.getElements().size() > 0) {
+        if (group.contains(propertyKey)) {
+          return group.getName();
+        }
       }
     }
     return result;

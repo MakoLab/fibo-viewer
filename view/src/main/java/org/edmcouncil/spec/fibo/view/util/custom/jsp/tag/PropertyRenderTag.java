@@ -9,9 +9,12 @@ import java.util.regex.Pattern;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import org.edmcouncil.spec.fibo.config.configuration.model.PairImpl;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlDirectedSubClassesProperty;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlListElementIndividualProperty;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class PropertyRenderTag extends SimpleTagSupport {
 
@@ -40,7 +43,6 @@ public class PropertyRenderTag extends SimpleTagSupport {
   public void doTag()
       throws JspException, IOException {
 
-    //JspContext context = getJspContext();
     
     switch (property.getType()) {
       case STRING:
@@ -57,6 +59,12 @@ public class PropertyRenderTag extends SimpleTagSupport {
         break;
       case OTHER:
         renderStringProperty(property);
+        break;
+      case DIRECT_SUBCLASSES:
+        renderDirectedSubclasses(property);
+        break;
+      case INSTANCES: 
+        renderInstances(property);
         break;
     }
 
@@ -174,6 +182,19 @@ public class PropertyRenderTag extends SimpleTagSupport {
     }
 
     return result;
+  }
+
+  private void renderDirectedSubclasses(PropertyValue property) throws IOException {
+    OwlDirectedSubClassesProperty subclassProperty = (OwlDirectedSubClassesProperty) property;
+    PairImpl value = subclassProperty.getValue();
+    String link = wrapIri((String)value.getValueB(), (String)value.getValueA());
+    renderProperty(link);
+  }
+  private void renderInstances(PropertyValue property) throws IOException {
+    OwlListElementIndividualProperty instanceProperty = (OwlListElementIndividualProperty) property;
+    PairImpl value = instanceProperty.getValue();
+    String link = wrapIri((String)value.getValueB(), (String)value.getValueA());
+    renderProperty(link);
   }
 
 }

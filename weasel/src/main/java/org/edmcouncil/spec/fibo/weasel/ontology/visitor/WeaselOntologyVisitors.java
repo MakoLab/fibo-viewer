@@ -6,7 +6,7 @@ import org.semanticweb.owlapi.model.OWLObjectVisitorEx;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class WeaselOntologyVisitors {
 

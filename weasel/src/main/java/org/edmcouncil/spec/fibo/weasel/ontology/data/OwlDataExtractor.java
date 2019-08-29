@@ -5,7 +5,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.springframework.stereotype.Component;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 @Component
 public class OwlDataExtractor {

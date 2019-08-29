@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+/**
+ * @author Michał Daniel (michal.daniel@makolab.com)
+ */
 @SpringBootApplication
 @ComponentScan(basePackages = { 
   "org.edmcouncil.spec.fibo.view", 
