@@ -80,10 +80,15 @@ public class OwlDataHandler {
 
         OwlDetailsProperties<PropertyValue> axioms = handleAxioms(clazz, ontology);
 
-        List<PropertyValue> subclasses = axioms.getProperties().getOrDefault(AxiomType.SUBCLASS_OF.getName(), new ArrayList<>(0));
-        List<PropertyValue> taxElements = subclasses.stream().filter((pv) -> (pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
+        List<PropertyValue> subclasses = axioms.getProperties()
+            .getOrDefault(AxiomType.SUBCLASS_OF.getName(), new ArrayList<>(0));
+        List<PropertyValue> taxElements = subclasses.stream()
+            .filter((pv) -> (pv.getType().equals(WeaselOwlType.TAXONOMY)))
+            .collect(Collectors.toList());
         OwlDetailsProperties<PropertyValue> handleSubClassOf = handleParticularSubClassOf(ontology, clazz);
         OwlDetailsProperties<PropertyValue> individuals = handleParticularIndividual(ontology, clazz);
+        //This code is only for fibo ontology, this line can be deleted for other ontologies.
+        OwlDetailsProperties<PropertyValue> modules = FiboDataHandler.handleFiboModulesData(ontology, clazz);
 
         subclasses = subclasses.stream().filter((pv) -> (!pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
         axioms.getProperties().put(AxiomType.SUBCLASS_OF.getName(), subclasses);
@@ -98,6 +103,7 @@ public class OwlDataHandler {
         resultDetails.addAllProperties(annotations);
         resultDetails.addAllProperties(handleSubClassOf);
         resultDetails.addAllProperties(individuals);
+        resultDetails.addAllProperties(modules);
       }
     }
     return resultDetails;
