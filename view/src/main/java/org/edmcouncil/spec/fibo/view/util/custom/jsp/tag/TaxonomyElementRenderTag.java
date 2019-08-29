@@ -9,7 +9,7 @@ import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyElementImpl;
 import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyValue;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class TaxonomyElementRenderTag extends SimpleTagSupport {
 
@@ -38,7 +38,7 @@ public class TaxonomyElementRenderTag extends SimpleTagSupport {
   public void doTag()
       throws JspException, IOException {
 
-    //JspContext context = getJspContext();
+  
     renderTaxonomyElement(element);
 
   }

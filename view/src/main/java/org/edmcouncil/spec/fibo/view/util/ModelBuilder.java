@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.springframework.ui.Model;
 
+/**
+ * @author Michał Daniel (michal.daniel@makolab.com)
+ */ 
 public class ModelBuilder {
 
   private final Model model;

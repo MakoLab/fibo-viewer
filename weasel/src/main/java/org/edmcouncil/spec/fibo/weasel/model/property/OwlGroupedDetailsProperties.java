@@ -17,7 +17,7 @@ import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigStringElem
 import org.edmcouncil.spec.fibo.weasel.comparator.WeaselComparators;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class OwlGroupedDetailsProperties<T> {
 
@@ -114,7 +114,7 @@ public class OwlGroupedDetailsProperties<T> {
       Map<String, List<T>> newprop = new LinkedHashMap();
 
       List priotityList = new LinkedList(group.getElements());
-      //group.getElements().forEach(a -> priotityList.add(a));
+  
 
       Comparator<String> comparator = WeaselComparators.getComparatorWithPriority(priotityList);
       SortedSet<String> keys = new TreeSet<>(comparator);
@@ -128,7 +128,6 @@ public class OwlGroupedDetailsProperties<T> {
     }
 
     if (others != null) {
-      //sort others 
       Map<String, List<T>> newothers = new LinkedHashMap<>();
       Comparator<String> comparator = WeaselComparators.getComparatorWithPriority(new ArrayList<>(0));
       SortedSet<String> keys = new TreeSet<>(comparator);

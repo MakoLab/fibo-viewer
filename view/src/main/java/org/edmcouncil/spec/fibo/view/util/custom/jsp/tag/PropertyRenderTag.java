@@ -14,7 +14,7 @@ import org.edmcouncil.spec.fibo.weasel.model.property.OwlDirectedSubClassesPrope
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlListElementIndividualProperty;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class PropertyRenderTag extends SimpleTagSupport {
 
@@ -43,7 +43,7 @@ public class PropertyRenderTag extends SimpleTagSupport {
   public void doTag()
       throws JspException, IOException {
 
-    //JspContext context = getJspContext();
+    
     switch (property.getType()) {
       case STRING:
         renderStringProperty(property);

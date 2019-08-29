@@ -9,8 +9,7 @@ import org.edmcouncil.spec.fibo.weasel.model.OwlTaxonomy;
 import org.edmcouncil.spec.fibo.config.configuration.model.Pair;
 
 /**
- *
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class OwlTaxonomyImpl implements OwlTaxonomy<OwlTaxonomyElementImpl> {
 

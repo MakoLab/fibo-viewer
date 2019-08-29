@@ -14,7 +14,7 @@ import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigStringElem
 import org.edmcouncil.spec.fibo.weasel.comparator.WeaselComparators;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class OwlDetailsProperties<T> {
 

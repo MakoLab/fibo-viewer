@@ -18,7 +18,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Configuration reader from xml file
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class WeaselConfigurationHandler extends DefaultHandler {
 
@@ -34,7 +34,6 @@ public class WeaselConfigurationHandler extends DefaultHandler {
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-    //use ignore sensitive case ? 
     switch (qName) {
       case WeaselConfigKeys.PRIORITY_LIST:
       case WeaselConfigKeys.IGNORED_TO_DISPLAY:
@@ -46,7 +45,6 @@ public class WeaselConfigurationHandler extends DefaultHandler {
         cge.setGroupType(GroupType.DEFAULT);
         break;
     }
-
   }
 
   @Override

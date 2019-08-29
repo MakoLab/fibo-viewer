@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigStringElement;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 public class WeaselComparators {
 

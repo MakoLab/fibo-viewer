@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 @Controller
 public class IndexController {

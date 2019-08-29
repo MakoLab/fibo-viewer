@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Create by Michał Daniel (michal.daniel@makolab.com)
+ * @author Michał Daniel (michal.daniel@makolab.com)
  */
 @Component
 public class AppConfiguration {
@@ -23,7 +23,6 @@ public class AppConfiguration {
   private static final Logger logger = LoggerFactory.getLogger(AppConfiguration.class);
 
   private Configuration<Set<? extends Object>> weaselConfig;
-  //other configuration if nedded
 
   public AppConfiguration() {
   }
