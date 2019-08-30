@@ -27,8 +27,7 @@ public class OwlDataExtractor {
   }
 
   public String extractAnyUriToString(String anyUri) {
-    //"https://www.merriam-webster.com/dictionary/account"^^xsd:anyURI
-
+ 
     String uriString = anyUri.replaceFirst("\"", "").replaceFirst("\"^^xsd:anyURI", "");
 
     return uriString;

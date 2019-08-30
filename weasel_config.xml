@@ -12,20 +12,39 @@
 	
   <groups><!--The order of elements in groups will be their priority-->
     <group>
-      <groupName>Definition</groupName>
+      <groupName>Natural Language characteristic</groupName>
       <groupElement>label</groupElement>
+      <groupElement>abbreviation</groupElement>
       <groupElement>definition</groupElement>
       <groupElement>synonym</groupElement>
       <groupElement>example</groupElement>
       <groupElement>scopeNote</groupElement>
+      <groupElement>explanatoryNote</groupElement>
+      <groupElement>editorialNote</groupElement>
+      <groupElement>seeAlso</groupElement>      
     </group>
+
     <group>
-      <groupName>Axioms</groupName>
+      <groupName>Ontological characteristic</groupName>
       <groupElement>EquivalentClasses</groupElement>
-      <groupElement>DisjointClasses</groupElement>
       <groupElement>SubClassOf</groupElement>
-			
+      <groupElement>DisjointClasses</groupElement>
+      <groupElement>ClassAssertion</groupElement>
+      <groupElement>SameIndividual</groupElement>
+      <groupElement>ObjectPropertyAssertion</groupElement>    
+      <groupElement>DataPropertyAssertion</groupElement>
     </group>
+
+    <group>
+      <groupName>Direct subClasses</groupName>
+      <groupType>DIRECT_SUBCLASSES</groupType>
+    </group>
+    
+    <group>
+      <groupName>Instances</groupName>
+      <groupType>INSTANCES</groupType>
+    </group> 
+
     <group>
       <groupName>Meta-information</groupName>
       <groupElement>hasMaturityLevel</groupElement>
@@ -36,18 +55,7 @@
       <groupElement>moduleLevel3</groupElement>
       <groupElement>isDefinedBy</groupElement>
       <groupElement>comment</groupElement>
-    </group>
-
-				
-    <group>
-      <groupName>Direct subClasses</groupName>
-      <groupType>DIRECT_SUBCLASSES</groupType>
-             
-    </group>   
-    <group>
-      <groupName>Instances</groupName>
-      <groupType>INSTANCES</groupType>
-    </group>   
+    </group>				  
                   
   </groups>
 	
