@@ -4,6 +4,7 @@ import org.edmcouncil.spec.fibo.weasel.model.PropertyValue;
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlAnnotationPropertyValue;
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlAxiomPropertyValue;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.servlet.jsp.JspException;
@@ -95,10 +96,19 @@ public class PropertyRenderTag extends SimpleTagSupport {
   private void renderAxiom(PropertyValue property) throws IOException {
     OwlAxiomPropertyValue axiomPropertyVal = (OwlAxiomPropertyValue) property;
     String result = axiomPropertyVal.getValue();
+    String[] list = result.split(" ");
+    String[] checkList = result.split(" ");
     for (Map.Entry<String, String> entry : axiomPropertyVal.getEntityMaping().entrySet()) {
       String replecment = parseIriWithoutWraping(entry.getValue(), entry.getKey());
-      String regex = String.format("\\b%s\\b", entry.getKey());
-      result = Pattern.compile(regex).matcher(result).replaceAll(replecment);
+      
+      for (int i = 0; i < checkList.length; i++) {
+        String string = checkList[i];
+        if(string.equals(entry.getKey())){
+          list[i] = replecment;
+        }
+      }
+        result = String.join(" ", list);
+      
     }
     if (elementWrapper != null && !elementWrapper.isEmpty()) {
       result = wrapElement(result);
