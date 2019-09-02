@@ -1,30 +1,16 @@
 package org.edmcouncil.spec.fibo.weasel.ontology;
 
-import com.sun.scenario.effect.Merge;
 import java.io.File;
-import java.io.FileOutputStream;
 import org.edmcouncil.spec.fibo.config.utils.files.FileSystemManager;
 import org.edmcouncil.spec.fibo.weasel.model.OwlDetails;
 import java.io.IOException;
-import java.io.OutputStream;
-import static java.lang.System.load;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import static java.util.ServiceLoader.load;
-import static java.util.ServiceLoader.load;
-import static java.util.ServiceLoader.load;
-import static java.util.ServiceLoader.load;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Stream;
-import static javafx.fxml.FXMLLoader.load;
-import static javafx.fxml.FXMLLoader.load;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.edmcouncil.spec.fibo.config.configuration.model.AppConfiguration;
@@ -37,14 +23,9 @@ import org.edmcouncil.spec.fibo.weasel.model.PropertyValue;
 import org.edmcouncil.spec.fibo.weasel.ontology.data.OwlDataHandler;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.MissingImportHandlingStrategy;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,8 +63,7 @@ public class WeaselOntologyManager {
   }
 
   private void loadOntologyFromFile() throws IOException, OWLOntologyCreationException {
-    OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-
+   
     FileSystemManager fsm = new FileSystemManager();
     File inputOntologyFile = fsm.getPathToOntologyFile().toFile();
 
@@ -133,6 +113,7 @@ public class WeaselOntologyManager {
 
   public Collection getDetailsByIri(String iriString) {
     IRI iri = IRI.create(iriString);
+    // TODO: change result type from list to single OwlDetails element.
     List<OwlDetails> result = new LinkedList<>();
 
     if (ontology.containsClassInSignature(iri)) {
@@ -163,6 +144,11 @@ public class WeaselOntologyManager {
         result.add(wd);
       }
     }
+    
+    for (OwlDetails owlDetails : result) {
+      owlDetails.setIri(iriString);
+    }
+    
     if (!config.getWeaselConfig().isEmpty()) {
       WeaselConfiguration cfg = (WeaselConfiguration) config.getWeaselConfig();
       if (cfg.isGrouped()) {
@@ -184,7 +170,6 @@ public class WeaselOntologyManager {
       for (Map.Entry<String, List<PropertyValue>> entry : owlDetails.getProperties().entrySet()) {
         String propertyKey = entry.getKey();
         String groupName = null;
-        String groupSubClassOf = null;
         groupName = getGroupName(groups, propertyKey);
         groupName = groupName == null ? DEFAULT_GROUP_NAME : groupName;
         for (PropertyValue property : entry.getValue()) {
@@ -193,6 +178,7 @@ public class WeaselOntologyManager {
       }
       groupedDetails.setTaxonomy(owlDetails.getTaxonomy());
       groupedDetails.setLabel(owlDetails.getLabel());
+      groupedDetails.setIri(owlDetails.getIri());
       groupedDetails.sortProperties(groups);
 
       newResult.add(groupedDetails);
