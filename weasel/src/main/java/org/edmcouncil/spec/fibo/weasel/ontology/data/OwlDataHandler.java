@@ -458,75 +458,23 @@ public class OwlDataHandler {
     return result;
   }
 
-  //TODO
   private OwlDetailsProperties<PropertyValue> handleInheritedAxioms(OWLOntology ontology, OWLClass clazz) {
     OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<PropertyValue>();
-    //<editor-fold defaultstate="collapsed" desc="comment 1">
-    // Iterator<OWLSubClassOfAxiom> iterator = ontology.subClassAxiomsForSuperClass(clazz).iterator();
-
-    // for (List<OwlTaxonomyElementImpl> list : taxonomyImpl.getValue()) {
-    //  for (OwlTaxonomyElementImpl owlTaxonomyElementImpl : list) {
-    //  OwlTaxonomyValue valueB = owlTaxonomyElementImpl.getValueB();
-    //   OWLEntity entity = null;
-    //  List<PropertyValue> entity = getSubclasses(ontology, AxiomType.SUBCLASS_OF);
-    //OWLEntity entity = (OWLEntity) getSubElements(clazz, ontology, WeaselOwlType.IRI);
-//        valueB.getValue();
-//       // OWLEntity entity = (OWLEntity) getSubclasses(ontology, AxiomType.SUBCLASS_OF);
-//        OWLClass entity;
-//        EntitySearcher.getSuperClasses(clazz, ontology);
-//
-//  OwlDetailsProperties<PropertyValue> axioms = handleAxioms(clazz, ontology);
-//   OwlTaxonomyElementImpl r = new OwlTaxonomyElementImpl();
-// r.setValueB(valueB);
-//  e.setValue(new PairImpl(valueB));
-// result.addProperty(WeaselOwlType.DIRECT_SUBCLASSES.name(), e);
-//</editor-fold>
     OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
     OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
-    NodeSet<OWLClass> claz = reasoner.getSuperClasses(clazz);
 
     NodeSet<OWLClass> rset = reasoner.getSuperClasses(clazz, InferenceDepth.ALL);
     for (OWLClass c : rset.entities().collect(Collectors.toSet())) {
-//          if (!reasoner.getSuperClasses(c, true).isEmpty()) {
-//            c.getIRI().getFragment();
-//            for (OWLClass parent : reasoner.getSuperClasses(c, true).entities().collect(Collectors.toSet())) {
-//              parent.getIRI().getFragment();
-//            }
-
-      //}
-      LOGGER.debug(c.getIRI().getFragment());
+      //LOGGER.debug(c.getIRI().getFragment());
       OwlDetailsProperties<PropertyValue> handleAxioms = handleAxioms(c, ontology);
-      // result.addProperty(WeaselOwlType.AXIOM_DATATYPE.name(), r);
+
       for (Map.Entry<String, List<PropertyValue>> entry : handleAxioms.getProperties().entrySet()) {
         for (PropertyValue propertyValue : entry.getValue()) {
-
-          //   result.addProperty(entry.getKey() + " Inherited", propertyValue);
           result.addProperty(WeaselOwlType.ANONYMOUS_ANCESTOR.name(), propertyValue);
-          //  entry.getValue();
         }
       }
-
     }
     return result;
 
-//   // List<OwlTaxonomyImpl> superClass = getSubclasses(ontology, AxiomType.SUBCLASS_OF, clazz)
-//for (Node<OWLClass> node : claz.) {
-//      
-//    }
-//
-//    NodeSet<OWLClass> superclasses = reasoner.getSuperClasses(clazz, true);
-//    for (org.semanticweb.owlapi.reasoner.Node<OWLClass> parentOWLNode : superclasses) {
-//      OWLClassExpression parent = parentOWLNode.getRepresentativeElement();
-//      LOGGER.debug(parent.toString());
-//      parent.classesInSignature();
-//
-//    }
   }
-
-//    for (PropertyValue clazz :getSubclasses(ontology, org.semanticweb.owlapi.model.AxiomType.SUBCLASS_OF, entity) ) {
-//      OWLSubClassOfAxiom next = iterator.next();
-//      OWLClassExpression superClass = next.getSuperClass();
-//if (property.getType().equals(WeaselOwlType.AXIOM)) {
-  //  OwlAxiomPropertyValue axiomProperty = (OwlAxiomPropertyValue) property;
-  //}/
 }
