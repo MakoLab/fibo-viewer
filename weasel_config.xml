@@ -44,6 +44,11 @@
       <groupName>Instances</groupName>
       <groupType>INSTANCES</groupType>
     </group> 
+ 
+     <group>
+      <groupName>Inherited axioms</groupName>
+      <groupType>ANONYMOUS_ANCESTOR</groupType>
+    </group> 
 
     <group>
       <groupName>Meta-information</groupName>
