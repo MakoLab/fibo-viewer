@@ -92,7 +92,7 @@ public class OwlDataHandler {
         List<PropertyValue> taxElements = subclasses.stream().filter((pv) -> (pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
         OwlDetailsProperties<PropertyValue> handleSubClassOf = handleParticularSubClassOf(ontology, clazz);
         OwlDetailsProperties<PropertyValue> individuals = handleParticularIndividual(ontology, clazz);
-        OwlDetailsProperties<PropertyValue> InheritedAxioms = handleInheritedAxioms(ontology, clazz);
+        OwlDetailsProperties<PropertyValue> inheritedAxioms = handleInheritedAxioms(ontology, clazz);
 
         subclasses = subclasses.stream().filter((pv) -> (!pv.getType().equals(WeaselOwlType.TAXONOMY))).collect(Collectors.toList());
         axioms.getProperties().put(AxiomType.SUBCLASS_OF.getName(), subclasses);
@@ -107,6 +107,7 @@ public class OwlDataHandler {
         resultDetails.addAllProperties(annotations);
         resultDetails.addAllProperties(handleSubClassOf);
         resultDetails.addAllProperties(individuals);
+        resultDetails.addAllProperties(inheritedAxioms);
 
       }
     }
@@ -460,6 +461,7 @@ public class OwlDataHandler {
   //TODO
   private OwlDetailsProperties<PropertyValue> handleInheritedAxioms(OWLOntology ontology, OWLClass clazz) {
     OwlDetailsProperties<PropertyValue> result = new OwlDetailsProperties<PropertyValue>();
+    //<editor-fold defaultstate="collapsed" desc="comment 1">
     // Iterator<OWLSubClassOfAxiom> iterator = ontology.subClassAxiomsForSuperClass(clazz).iterator();
 
     // for (List<OwlTaxonomyElementImpl> list : taxonomyImpl.getValue()) {
@@ -470,14 +472,15 @@ public class OwlDataHandler {
     //OWLEntity entity = (OWLEntity) getSubElements(clazz, ontology, WeaselOwlType.IRI);
 //        valueB.getValue();
 //       // OWLEntity entity = (OWLEntity) getSubclasses(ontology, AxiomType.SUBCLASS_OF);
-//        OWLClass entity; 
+//        OWLClass entity;
 //        EntitySearcher.getSuperClasses(clazz, ontology);
-//       
-    //  OwlDetailsProperties<PropertyValue> axioms = handleAxioms(clazz, ontology);
-    //   OwlTaxonomyElementImpl r = new OwlTaxonomyElementImpl();
-    // r.setValueB(valueB);
-    //  e.setValue(new PairImpl(valueB));
-    // result.addProperty(WeaselOwlType.DIRECT_SUBCLASSES.name(), e);
+//
+//  OwlDetailsProperties<PropertyValue> axioms = handleAxioms(clazz, ontology);
+//   OwlTaxonomyElementImpl r = new OwlTaxonomyElementImpl();
+// r.setValueB(valueB);
+//  e.setValue(new PairImpl(valueB));
+// result.addProperty(WeaselOwlType.DIRECT_SUBCLASSES.name(), e);
+//</editor-fold>
     OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
     OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
     NodeSet<OWLClass> claz = reasoner.getSuperClasses(clazz);
@@ -492,6 +495,17 @@ public class OwlDataHandler {
 
       //}
       LOGGER.debug(c.getIRI().getFragment());
+      OwlDetailsProperties<PropertyValue> handleAxioms = handleAxioms(c, ontology);
+      // result.addProperty(WeaselOwlType.AXIOM_DATATYPE.name(), r);
+      for (Map.Entry<String, List<PropertyValue>> entry : handleAxioms.getProperties().entrySet()) {
+        for (PropertyValue propertyValue : entry.getValue()) {
+
+          //   result.addProperty(entry.getKey() + " Inherited", propertyValue);
+          result.addProperty(WeaselOwlType.ANONYMOUS_ANCESTOR.name(), propertyValue);
+          //  entry.getValue();
+        }
+      }
+
     }
     return result;
 
