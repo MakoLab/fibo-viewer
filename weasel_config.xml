@@ -39,6 +39,12 @@
       <groupElement>SameIndividual</groupElement>
       <groupElement>ObjectPropertyAssertion</groupElement>    
       <groupElement>DataPropertyAssertion</groupElement>
+      <groupElement>SubObjectPropertyOf</groupElement>
+      <groupElement>EquivalentObjectProperties</groupElement>
+      <groupElement>ObjectPropertyDomain</groupElement>
+      <groupElement>ObjectPropertyRange</groupElement>
+      <groupElement>InverseObjectProperties</groupElement>
+
     </group>
 
     <group>
