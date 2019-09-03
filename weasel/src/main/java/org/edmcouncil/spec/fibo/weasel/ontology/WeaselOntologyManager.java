@@ -163,6 +163,19 @@ public class WeaselOntologyManager {
         result.add(wd);
       }
     }
+
+    if (((WeaselConfiguration) config.getWeaselConfig()).hasRenamedGroups()) {
+      List<OwlDetails> resultTmp = new LinkedList<>();
+      for (OwlDetails owlDetails : result) {
+        for (Map.Entry<String, List<PropertyValue>> entry : owlDetails.getProperties().entrySet()) {
+          //owlDetails.s
+          
+        }
+
+      }
+      result = resultTmp;
+    }
+
     if (!config.getWeaselConfig().isEmpty()) {
       WeaselConfiguration cfg = (WeaselConfiguration) config.getWeaselConfig();
       if (cfg.isGrouped()) {
