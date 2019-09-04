@@ -214,7 +214,7 @@ public class WeaselOntologyManager {
       }
       groupedDetails.setTaxonomy(owlDetails.getTaxonomy());
       groupedDetails.setLabel(owlDetails.getLabel());
-      groupedDetails.sortProperties(groups);
+      groupedDetails.sortProperties(groups, cfg);
 
       newResult.add(groupedDetails);
     }

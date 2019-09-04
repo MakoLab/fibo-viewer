@@ -9,6 +9,7 @@ import java.util.Set;
 import org.edmcouncil.spec.fibo.config.configuration.model.ConfigElement;
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigGroupsElement;
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigStringElement;
+import org.edmcouncil.spec.fibo.config.configuration.model.impl.WeaselConfiguration;
 import org.edmcouncil.spec.fibo.weasel.model.property.OwlGroupedDetailsProperties;
 import org.edmcouncil.spec.fibo.weasel.model.taxonomy.OwlTaxonomyImpl;
 
@@ -105,6 +106,10 @@ public class OwlGroupedDetails {
   public void sortProperties(Set<ConfigElement> groups) {
    properties.sort(groups);
 
+  }
+
+  public void sortProperties(Set<ConfigElement> groups, WeaselConfiguration cfg) {
+   properties.sort(groups,cfg);
   }
 
 }
