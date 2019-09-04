@@ -74,4 +74,17 @@ public class WeaselConfiguration implements Configuration<Set<ConfigElement>> {
   public boolean hasRenamedGroups(){
     return configuration.get(WeaselConfigKeys.RENAME_GROUPS)!=null;
   }
+
+  public String getOldName(String newName) {
+     Set<ConfigElement> renamedGroups = configuration.getOrDefault(WeaselConfigKeys.RENAME_GROUPS, new HashSet<>());
+    for (ConfigElement renamedG : renamedGroups) {
+      ConfigRenameElement rename = (ConfigRenameElement) renamedG;
+      if (rename.getNewName().equals(newName)) {
+        return rename.getOldName();
+      }
+    }
+
+    return null;
+  }
+
 }

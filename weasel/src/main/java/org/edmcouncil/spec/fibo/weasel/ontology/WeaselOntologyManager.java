@@ -34,6 +34,7 @@ import org.edmcouncil.spec.fibo.config.configuration.model.impl.ConfigGroupsElem
 import org.edmcouncil.spec.fibo.config.configuration.model.impl.WeaselConfiguration;
 import org.edmcouncil.spec.fibo.weasel.model.OwlGroupedDetails;
 import org.edmcouncil.spec.fibo.weasel.model.PropertyValue;
+import org.edmcouncil.spec.fibo.weasel.model.property.OwlDetailsProperties;
 import org.edmcouncil.spec.fibo.weasel.ontology.data.OwlDataHandler;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -163,17 +164,20 @@ public class WeaselOntologyManager {
         result.add(wd);
       }
     }
-
-    if (((WeaselConfiguration) config.getWeaselConfig()).hasRenamedGroups()) {
-      List<OwlDetails> resultTmp = new LinkedList<>();
+    WeaselConfiguration weaselConfig = (WeaselConfiguration) config.getWeaselConfig();
+    if (weaselConfig.hasRenamedGroups()) {
       for (OwlDetails owlDetails : result) {
+        OwlDetailsProperties<PropertyValue> prop = new OwlDetailsProperties<>();
         for (Map.Entry<String, List<PropertyValue>> entry : owlDetails.getProperties().entrySet()) {
-          //owlDetails.s
-          
+          String key = entry.getKey();
+          String newName = weaselConfig.getNewName(key);
+          newName = newName == null ? key : newName;
+          for (PropertyValue propertyValue : entry.getValue()) {
+            prop.addProperty(newName, propertyValue);
+          }
         }
-
+        owlDetails.setProperties(prop);
       }
-      result = resultTmp;
     }
 
     if (!config.getWeaselConfig().isEmpty()) {
@@ -196,9 +200,13 @@ public class WeaselOntologyManager {
 
       for (Map.Entry<String, List<PropertyValue>> entry : owlDetails.getProperties().entrySet()) {
         String propertyKey = entry.getKey();
+        String propertyName = null;
+        if (cfg.hasRenamedGroups()) {
+          propertyName = cfg.getOldName(propertyKey);
+          propertyName = propertyName == null ? propertyKey : propertyName;
+        }
         String groupName = null;
-        String groupSubClassOf = null;
-        groupName = getGroupName(groups, propertyKey);
+        groupName = getGroupName(groups, propertyName);
         groupName = groupName == null ? DEFAULT_GROUP_NAME : groupName;
         for (PropertyValue property : entry.getValue()) {
           groupedDetails.addProperty(groupName, propertyKey, property);

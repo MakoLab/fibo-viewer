@@ -45,6 +45,10 @@ public class OwlDetails {
     this.type = type;
   }
 
+  public void setProperties(OwlDetailsProperties<PropertyValue> properties) {
+    this.properties = properties;
+  }
+  
   public void addProperty(String key, OwlAnnotationPropertyValue property) {
     properties.addProperty(key, property);
   }
