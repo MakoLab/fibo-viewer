@@ -103,7 +103,7 @@ public class OwlDataHandler {
         resultDetails.addAllProperties(annotations);
         resultDetails.addAllProperties(handleSubClassOf);
         resultDetails.addAllProperties(individuals);
-        resultDetails.addAllProperties(modules);
+        //resultDetails.addAllProperties(modules);
       }
     }
     return resultDetails;
