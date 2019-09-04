@@ -115,6 +115,7 @@ public class OwlGroupedDetailsProperties<T> {
 
       List priotityList = new LinkedList(group.getElements());
   
+      
 
       Comparator<String> comparator = WeaselComparators.getComparatorWithPriority(priotityList);
       SortedSet<String> keys = new TreeSet<>(comparator);
